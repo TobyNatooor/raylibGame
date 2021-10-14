@@ -25,6 +25,16 @@ bool isHitByBullet(Vector3 enemyPos, Vector3 enemyDime, vector<Vector3> bulletPo
     return false;
 };
 
+const char* stringToCharArr(string str)
+{
+    int charLength = str.length();
+    char charReturn[charLength];
+    for (int i = 0; i < charLength; i++) {
+        charReturn[i] = str[i];
+    }
+
+};
+
 int main(void)
 {
     const int screenWidth = 1200;
@@ -33,7 +43,7 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "first person shooter");
 
     Camera camera = {0};
-    camera.position = Vector3{4.0f, 2.0f, 4.0f};
+    camera.position = Vector3{4.0f, 3.0f, 4.0f};
     camera.target = Vector3{0.0f, 1.8f, 0.0f};
     camera.up = Vector3{0.0f, 1.0f, 0.0f};
     camera.fovy = 60.0f;
@@ -48,14 +58,16 @@ int main(void)
     vector<Vector3> enemyDimension = {{3.0f, 3.0f, 3.0f}, {6.0f, 6.0f, 6.0f}};
     Color enemyColor = GREEN;
 
+    const char testCharArr[5] = "test";
+
     SetCameraMode(camera, CAMERA_FIRST_PERSON);
+
+    HideCursor();
 
     SetTargetFPS(60);
 
     while (!WindowShouldClose())
     {
-        if (IsKeyDown(KEY_X))
-            cout << "test" << endl;
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) /*  (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) */
         {
@@ -94,11 +106,34 @@ int main(void)
 
         EndMode3D();
 
-        // DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-        // DrawRectangleLines( 10, 10, 220, 70, BLUE);
-        // DrawText(StringCameraCoordinates, 20, 20, 10, BLACK);
+        DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
+        DrawRectangleLines( 10, 10, 220, 70, BLUE);
+        DrawText(testCharArr, 20, 20, 10, BLACK);
 
         EndDrawing();
+
+        if (IsKeyDown(KEY_SPACE))
+        {
+            // cout << "test" << endl;
+            camera.position.y += 5.5f;
+            // float acceleration = 0.5f;
+            // while (2.0f < camera.position.x)
+            // {
+            //     camera.position.x += acceleration;
+            //     acceleration -= 0.1f;
+            // }
+        };
+
+        // Vector2 mouseDelta = GetMouseDelta();
+        SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
+
+        // camera.target.x -= mouseDelta.x;
+        // camera.target.y -= mouseDelta.y;
+
+        //string printString = to_string(mouseDelta.x) + to_string(mouseDelta.y);
+        string printString = to_string(camera.target.x) + " " + to_string(camera.target.y) + " " + to_string(camera.target.z);
+        if (IsKeyDown(KEY_X))
+            cout << printString << endl;
     }
 
     CloseWindow();
