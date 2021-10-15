@@ -25,15 +25,15 @@ bool isHitByBullet(Vector3 enemyPos, Vector3 enemyDime, vector<Vector3> bulletPo
     return false;
 };
 
-const char* stringToCharArr(string str)
-{
-    int charLength = str.length();
-    char charReturn[charLength];
-    for (int i = 0; i < charLength; i++) {
-        charReturn[i] = str[i];
-    }
+// const char* stringToCharArr(string str)
+// {
+//     int charLength = str.length();
+//     char charReturn[charLength];
+//     for (int i = 0; i < charLength; i++) {
+//         charReturn[i] = str[i];
+//     }
 
-};
+// };
 
 int main(void)
 {
@@ -124,11 +124,12 @@ int main(void)
             // }
         };
 
-        // Vector2 mouseDelta = GetMouseDelta();
+/*         Vector2 mouseDelta = GetMouseDelta();
         SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
 
-        // camera.target.x -= mouseDelta.x;
-        // camera.target.y -= mouseDelta.y;
+        camera.target.x -= mouseDelta.x;
+        camera.target.y -= mouseDelta.y;
+        camera.target.z -= mouseDelta.x / mouseDelta.y; */
 
         //string printString = to_string(mouseDelta.x) + to_string(mouseDelta.y);
         string printString = to_string(camera.target.x) + " " + to_string(camera.target.y) + " " + to_string(camera.target.z);
