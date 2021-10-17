@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <math.h>
+#include <cstring>
 #include ".\include\raylib.h"
 
 using namespace std;
@@ -40,10 +42,10 @@ int main(void)
     const int screenWidth = 1200;
     const int screenHeight = 700;
 
-    InitWindow(screenWidth, screenHeight, "first person shooter");
+    InitWindow(screenWidth, screenHeight, "");
 
     Camera camera = {0};
-    camera.position = Vector3{4.0f, 3.0f, 4.0f};
+    camera.position = Vector3{4.0f, 2.0f, 4.0f};
     camera.target = Vector3{0.0f, 1.8f, 0.0f};
     camera.up = Vector3{0.0f, 1.0f, 0.0f};
     camera.fovy = 60.0f;
@@ -58,9 +60,12 @@ int main(void)
     vector<Vector3> enemyDimension = {{3.0f, 3.0f, 3.0f}, {6.0f, 6.0f, 6.0f}};
     Color enemyColor = GREEN;
 
-    const char testCharArr[5] = "test";
+    Vector2 mouseCoords = {0.0f, 0.0f};
+    int num = 0;
 
-    SetCameraMode(camera, CAMERA_FIRST_PERSON);
+    SetCameraMode(camera, CAMERA_CUSTOM);
+
+    //ToggleFullscreen();
 
     HideCursor();
 
@@ -68,25 +73,16 @@ int main(void)
 
     while (!WindowShouldClose())
     {
-
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) /*  (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) */
-        {
-            bulletPosition.push_back({camera.position.x, camera.position.y, camera.position.z});
-            bulletDirection.push_back({camera.target.x - camera.position.x,
-                                       camera.target.y - camera.position.y,
-                                       camera.target.z - camera.position.z});
-        };
-
         UpdateCamera(&camera);
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
         BeginMode3D(camera);
 
-        // Walls and ground
+        // Draws walls and ground
         DrawPlane(Vector3{0.0f, 0.0f, 0.0f}, Vector2{32.0f, 32.0f}, LIGHTGRAY);
 
-        // Bullets
+        // Draws bullets
         for (int i = 0; i < bulletPosition.size(); i++)
         {
             DrawCube(bulletPosition[i], bulletDimension.x, bulletDimension.y, bulletDimension.z, BLACK);
@@ -95,7 +91,7 @@ int main(void)
             bulletPosition[i].z += bulletDirection[i].z * bulletSpeed;
         };
 
-        // Enemies
+        // Draws enemies
         for (int i = 0; i < enemyPosition.size(); i++)
         {
             if (isHitByBullet(enemyPosition[i], enemyDimension[i], bulletPosition))
@@ -106,12 +102,40 @@ int main(void)
 
         EndMode3D();
 
-        DrawRectangle( 10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-        DrawRectangleLines( 10, 10, 220, 70, BLUE);
-        DrawText(testCharArr, 20, 20, 10, BLACK);
+        // Moving mouse moves camera target/direction
+        Vector2 mouseDelta = GetMouseDelta();
+        SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
+
+        mouseCoords.x -= mouseDelta.x / 400;
+        mouseCoords.y -= mouseDelta.y / 200;
+        camera.target.x = sin(mouseCoords.x) * 2.2f + 4;
+        camera.target.y = mouseCoords.y;
+        camera.target.z = cos(mouseCoords.x) * 2.2f + 4;
+
+        // Converts string 'displayString' to char[] to displays it ingame
+        string displayString = "[" + to_string(num) + "," +
+                               to_string(camera.target.x) + "," +
+                               to_string(camera.target.y) + "," +
+                               to_string(camera.target.z) + "],";
+        // string displayString = to_string(mouseCoords.x) + "   " + to_string(mouseCoords.y);
+        char tab2[1024];
+        char *displayCharArr = strcpy(tab2, displayString.c_str());
+
+        DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
+        DrawRectangleLines(10, 10, 220, 70, BLUE);
+        DrawText(displayCharArr, 20, 20, 10, BLACK);
 
         EndDrawing();
 
+        // Shooting
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        {
+            bulletPosition.push_back({camera.position.x, camera.position.y, camera.position.z});
+            bulletDirection.push_back({camera.target.x - camera.position.x,
+                                       camera.target.y - camera.position.y,
+                                       camera.target.z - camera.position.z});
+        };
+        // Jumping
         if (IsKeyDown(KEY_SPACE))
         {
             // cout << "test" << endl;
@@ -123,18 +147,34 @@ int main(void)
             //     acceleration -= 0.1f;
             // }
         };
+        // Left
+        if (IsKeyDown(KEY_A))
+        {
+            // camera.position.x += ;
+            // camera.position.y += ;
+        }
+        // Right
+        if (IsKeyDown(KEY_D))
+        {
 
-/*         Vector2 mouseDelta = GetMouseDelta();
-        SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
+        }
+        // Forward
+        if (IsKeyDown(KEY_W))
+        {
 
-        camera.target.x -= mouseDelta.x;
-        camera.target.y -= mouseDelta.y;
-        camera.target.z -= mouseDelta.x / mouseDelta.y; */
+        }
+        // Backward
+        if (IsKeyDown(KEY_S))
+        {
 
-        //string printString = to_string(mouseDelta.x) + to_string(mouseDelta.y);
-        string printString = to_string(camera.target.x) + " " + to_string(camera.target.y) + " " + to_string(camera.target.z);
+        }
+
+        // Prints camera target coordinates when x is pressed
         if (IsKeyDown(KEY_X))
-            cout << printString << endl;
+        {
+            cout << displayString << endl;
+            num += 1;
+        }
     }
 
     CloseWindow();
