@@ -62,7 +62,7 @@ int main(void)
 
     Vector2 mouseCoords = {0.0f, 0.0f};
     int num = 0;
-    float playerDegrees;
+    float cameraSpeed = 0.1f;
 
     SetCameraMode(camera, CAMERA_CUSTOM);
 
@@ -107,28 +107,25 @@ int main(void)
 
         EndMode3D();
 
-        // Moving mouse moves camera target/direction
-        Vector2 mouseDelta = GetMouseDelta();
-        SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
-
-        mouseCoords.x -= mouseDelta.x / 400;
-        mouseCoords.y -= mouseDelta.y / 200;
-        camera.target.x = sin(mouseCoords.x) + 4;
-        camera.target.y = mouseCoords.y;
-        camera.target.z = cos(mouseCoords.x) + 4;
-
         // Converts string 'displayString' to char[] to displays it ingame
-        string displayString = "[" + to_string(num) + "," +
+        string displayString = "[" +
+                               to_string(num) + "," +
                                to_string(camera.target.x) + "," +
                                to_string(camera.target.y) + "," +
-                               to_string(camera.target.z) + "],\n" +
+                               to_string(camera.target.z) + "]," +
+                               "\n[" +
                                to_string(camera.position.x) + "," +
                                to_string(camera.position.y) + "," +
-                               to_string(camera.position.z) + "],\n" +
+                               to_string(camera.position.z) + "]," +
+                               "\n[" +
                                to_string(cameraDirection.x) + "," +
                                to_string(cameraDirection.y) + "," +
-                               to_string(cameraDirection.z) + "],";
-        // string displayString = to_string(mouseDelta.x) + "   " + to_string(mouseDelta.y);
+                               to_string(cameraDirection.z) + "]," +
+                               "\n[" +
+                               to_string(camera.up.x) + "," +
+                               to_string(camera.up.y) + "," +
+                               to_string(camera.up.z) + "]," +
+                               "";
         char tab2[1024];
         strcpy(tab2, displayString.c_str());
 
@@ -160,30 +157,49 @@ int main(void)
         // Forward
         if (IsKeyDown(KEY_W))
         {
-            camera.position.x += camera.target.x - 4;
-            camera.position.y += camera.target.z - 4;
-            // camera.target.x += camera.target.x - 4;
-            // camera.target.y += camera.target.z - 4;
-
-            std::cout << "key w was pressed \n";
+            camera.position.x += cameraDirection.x * cameraSpeed;
+            camera.position.z += cameraDirection.z * cameraSpeed;
         }
         // Backward
         if (IsKeyDown(KEY_S))
         {
+            camera.position.x += -cameraDirection.x * cameraSpeed;
+            camera.position.z += -cameraDirection.z * cameraSpeed;
         }
         // Left
         if (IsKeyDown(KEY_A))
         {
+            camera.position.x += (cameraDirection.x + 1) * cameraSpeed;
+            camera.position.z += (cameraDirection.z + 1) * cameraSpeed;
         }
         // Right
         if (IsKeyDown(KEY_D))
         {
+            camera.position.x += (cameraDirection.x + 1) * cameraSpeed;
+            camera.position.z += (cameraDirection.z - 1) * cameraSpeed;
         }
+
+        // Moving mouse moves camera target/direction
+        // -: left and up, +: right and down
+        Vector2 mouseDelta = GetMouseDelta();
+        SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
+
+        mouseCoords.x -= mouseDelta.x / 800;
+        mouseCoords.y -= mouseDelta.y / 400;
+
+        cameraDirection.x = cos(-mouseCoords.x);
+        cameraDirection.y = tan(mouseCoords.y);
+        cameraDirection.z = sin(-mouseCoords.x);
+
+        camera.target.x = camera.position.x + cameraDirection.x;
+        camera.target.y = camera.position.y + cameraDirection.y;
+        camera.target.z = camera.position.z + cameraDirection.z;
 
         // Prints camera target coordinates when x is pressed
         if (IsKeyDown(KEY_X))
         {
-            cout << displayString << endl;
+            // cout << displayString << endl;
+            cout << to_string(mouseDelta.x) + "   " + to_string(mouseDelta.y) << endl;
             num += 1;
         }
     }
