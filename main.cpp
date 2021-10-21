@@ -27,16 +27,6 @@ bool isHitByBullet(Vector3 enemyPos, Vector3 enemyDime, vector<Vector3> bulletPo
     return false;
 };
 
-// const char* stringToCharArr(string str)
-// {
-//     int charLength = str.length();
-//     char charReturn[charLength];
-//     for (int i = 0; i < charLength; i++) {
-//         charReturn[i] = str[i];
-//     }
-
-// };
-
 int main(void)
 {
     const int screenWidth = 1200;
@@ -44,25 +34,32 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "");
 
+    // Camera
     Camera camera = {0};
     camera.position = Vector3{4.0f, 2.0f, 4.0f};
     camera.target = Vector3{0.0f, 1.8f, 0.0f};
     camera.up = Vector3{0.0f, 1.0f, 0.0f};
-    camera.fovy = 60.0f;
+    camera.fovy = 90.0f;
     camera.projection = CAMERA_PERSPECTIVE;
+    float cameraSpeed = 0.1f;
 
+    // Bullets
     vector<Vector3> bulletDirection = {};
     vector<Vector3> bulletPosition = {};
     Vector3 bulletDimension = {0.3f, 0.3f, 0.3f};
     float bulletSpeed = 0.3f;
 
+    // Enemies
     vector<Vector3> enemyPosition = {{-16.0f, 2.5f, 0.0f}, {-16.0f, 8.5f, 0.0f}};
     vector<Vector3> enemyDimension = {{3.0f, 3.0f, 3.0f}, {6.0f, 6.0f, 6.0f}};
     Color enemyColor = GREEN;
 
-    Vector2 mouseCoords = {0.0f, 0.0f};
+    // Jumping
+    float jumpAcceleration = 1.0f;
+    bool isJumping = false;
+
+    Vector2 mouseDeltaSum = {0.0f, 0.0f};
     int num = 0;
-    float cameraSpeed = 0.1f;
 
     SetCameraMode(camera, CAMERA_CUSTOM);
 
@@ -74,13 +71,35 @@ int main(void)
 
     while (!WindowShouldClose())
     {
-        UpdateCamera(&camera);
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-
         Vector3 cameraDirection = {camera.target.x - camera.position.x,
                                    camera.target.y - camera.position.y,
                                    camera.target.z - camera.position.z};
+
+        // Converts string 'displayString' to char[] to displays it ingame
+        string displayString = "[" +
+                               //    to_string(num) + "," +
+                               //    to_string(camera.target.x) + "," +
+                               //    to_string(camera.target.y) + "," +
+                               //    to_string(camera.target.z) + "]," +
+                               //    "\n[" +
+                               to_string(camera.position.x) + "," +
+                               to_string(camera.position.y) + "," +
+                               to_string(camera.position.z) + "]," +
+                               //    "\n[" +
+                               //    to_string(cameraDirection.x) + "," +
+                               //    to_string(cameraDirection.y) + "," +
+                               //    to_string(cameraDirection.z) + "]," +
+                               //    "\n[" +
+                               //    to_string(camera.up.x) + "," +
+                               //    to_string(camera.up.y) + "," +
+                               //    to_string(camera.up.z) + "]," +
+                               "";
+        char displayChar[1024];
+        strcpy(displayChar, displayString.c_str());
+
+        UpdateCamera(&camera);
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
 
         BeginMode3D(camera);
 
@@ -107,31 +126,9 @@ int main(void)
 
         EndMode3D();
 
-        // Converts string 'displayString' to char[] to displays it ingame
-        string displayString = "[" +
-                               to_string(num) + "," +
-                               to_string(camera.target.x) + "," +
-                               to_string(camera.target.y) + "," +
-                               to_string(camera.target.z) + "]," +
-                               "\n[" +
-                               to_string(camera.position.x) + "," +
-                               to_string(camera.position.y) + "," +
-                               to_string(camera.position.z) + "]," +
-                               "\n[" +
-                               to_string(cameraDirection.x) + "," +
-                               to_string(cameraDirection.y) + "," +
-                               to_string(cameraDirection.z) + "]," +
-                               "\n[" +
-                               to_string(camera.up.x) + "," +
-                               to_string(camera.up.y) + "," +
-                               to_string(camera.up.z) + "]," +
-                               "";
-        char tab2[1024];
-        strcpy(tab2, displayString.c_str());
-
         DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
         DrawRectangleLines(10, 10, 220, 70, BLUE);
-        DrawText(tab2, 20, 20, 10, BLACK);
+        DrawText(displayChar, 20, 20, 10, BLACK);
 
         EndDrawing();
 
@@ -144,15 +141,18 @@ int main(void)
         // Jumping
         if (IsKeyDown(KEY_SPACE))
         {
-            // cout << "test" << endl;
-            camera.position.y += 5.5f;
-            camera.target.y += 5.5f;
-            // float acceleration = 0.5f;
-            // while (2.0f < camera.position.x)
-            // {
-            //     camera.position.x += acceleration;
-            //     acceleration -= 0.1f;
-            // }
+            isJumping = true;
+        };
+        if (isJumping)
+        {
+            camera.position.y += 0.05f + jumpAcceleration;
+            jumpAcceleration += -0.05f;
+            if (camera.position.y < 2.0f)
+            {
+                jumpAcceleration = 1.0f;
+                camera.position.y = 2.0f;
+                isJumping = false;
+            };
         };
         // Forward
         if (IsKeyDown(KEY_W))
@@ -184,12 +184,12 @@ int main(void)
         Vector2 mouseDelta = GetMouseDelta();
         SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
 
-        mouseCoords.x -= mouseDelta.x / 800;
-        mouseCoords.y -= mouseDelta.y / 400;
+        mouseDeltaSum.x -= mouseDelta.x / 800;
+        mouseDeltaSum.y -= mouseDelta.y / 600;
 
-        cameraDirection.x = cos(-mouseCoords.x);
-        cameraDirection.y = tan(mouseCoords.y);
-        cameraDirection.z = sin(-mouseCoords.x);
+        cameraDirection.x = cos(-mouseDeltaSum.x);
+        cameraDirection.y = tan(mouseDeltaSum.y);
+        cameraDirection.z = sin(-mouseDeltaSum.x);
 
         camera.target.x = camera.position.x + cameraDirection.x;
         camera.target.y = camera.position.y + cameraDirection.y;
@@ -198,8 +198,8 @@ int main(void)
         // Prints camera target coordinates when x is pressed
         if (IsKeyDown(KEY_X))
         {
-            // cout << displayString << endl;
-            cout << to_string(mouseDelta.x) + "   " + to_string(mouseDelta.y) << endl;
+            cout << displayString << endl;
+            // cout << to_string(mouseDelta.x) + "   " + to_string(mouseDelta.y) << endl;
             num += 1;
         }
     }
