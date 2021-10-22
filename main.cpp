@@ -17,7 +17,7 @@ int main(void)
 
     // Camera
     Camera camera = {0};
-    camera.position = Vector3{4.0f, 4.0f, 4.0f};
+    camera.position = Vector3{4.0f, 2.0f, 4.0f};
     camera.target = Vector3{0.0f, 1.8f, 0.0f};
     camera.up = Vector3{0.0f, 1.0f, 0.0f};
     camera.fovy = 90.0f;
@@ -52,18 +52,21 @@ int main(void)
 
         // Converts string 'displayString' to char[] to displays it ingame
         string displayString = "[" +
-                               //    to_string(num) + "," +
-                               //    to_string(camera.target.x) + "," +
-                               //    to_string(camera.target.y) + "," +
-                               //    to_string(camera.target.z) + "]," +
-                               //    "\n[" +
+                               to_string(coutNumber) + "," +
+                               to_string(camera.target.x) + "," +
+                               to_string(camera.target.y) + "," +
+                               to_string(camera.target.z) + "]," +
+                               "\n[" +
                                to_string(camera.position.x) + "," +
                                to_string(camera.position.y) + "," +
                                to_string(camera.position.z) + "]," +
-                                  "\n[" +
-                                  to_string(cameraDirection.x) + "," +
-                                  to_string(cameraDirection.y) + "," +
-                                  to_string(cameraDirection.z) + "]," +
+                               "\n[" +
+                               to_string(cameraDirection.x) + "," +
+                               to_string(cameraDirection.y) + "," +
+                               to_string(cameraDirection.z) + "]," +
+                               "\n[" +
+                               to_string(mouseDeltaSum.x) + "," +
+                               to_string(mouseDeltaSum.y) + "]," +
                                //    "\n[" +
                                //    to_string(camera.up.x) + "," +
                                //    to_string(camera.up.y) + "," +
@@ -140,14 +143,14 @@ int main(void)
         // Left
         if (IsKeyDown(KEY_A))
         {
-            camera.position.x += (cameraDirection.x + 1) * cameraSpeed;
-            camera.position.z += (cameraDirection.z + 1) * cameraSpeed;
+            camera.position.x += (asin(cameraDirection.z) * 0.64f - 0) * cameraSpeed;
+            camera.position.z += (acos(cameraDirection.x) * 0.64f - 1) * cameraSpeed;
         }
         // Right
         if (IsKeyDown(KEY_D))
         {
-            camera.position.x += (cameraDirection.x + 1) * cameraSpeed;
-            camera.position.z += (cameraDirection.z - 1) * cameraSpeed;
+            camera.position.x += (acos(cameraDirection.z) * 0.64f - 1) * cameraSpeed;
+            camera.position.z += (asin(cameraDirection.x) * 0.64f - 0) * cameraSpeed;
         }
 
         // Moving mouse moves camera target/direction
@@ -169,8 +172,8 @@ int main(void)
         // Prints camera target coordinates when x is pressed
         if (IsKeyDown(KEY_X))
         {
-            cout << displayString << endl;
-            // cout << to_string(mouseDelta.x) + "   " + to_string(mouseDelta.y) << endl;
+            // cout << displayString << endl;
+            cout << to_string(mouseDeltaSum.x) + "   " + to_string(mouseDeltaSum.y) << endl;
             coutNumber += 1;
         }
     }
