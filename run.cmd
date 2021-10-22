@@ -1,4 +1,4 @@
 cd build
 mingw32-make
-.\test.exe
+.\game.exe
 cd ..
