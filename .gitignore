@@ -1,2 +1,5 @@
 build/game.exe
 .vscode/
+shaders/glsl100
+shaders/glsl120
+shaders/glsl330

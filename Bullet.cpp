@@ -2,23 +2,25 @@
 #include ".\include\raylib.h"
 #include "Bullet.h"
 
-Bullet::Bullet(Vector3 dimension, Vector3 position, Vector3 direction, float BulletSpeed, Color color)
+Bullet::Bullet(Vector3 _position, Vector3 _dimension, Color _color, Vector3 _direction, float _BulletSpeed, Shader shader)
 {
-    pos = position;
-    dime = dimension;
-    dire = direction;
-    col = color;
-    bulletSpeed = BulletSpeed;
+    position = _position;
+    dimension = _dimension;
+    direction = _direction;
+    color = _color;
+    bulletSpeed = _BulletSpeed;
+    model = LoadModelFromMesh(GenMeshSphere(0.3f, 5, 15));
+    model.materials[0].shader = shader;
 };
 
 void Bullet::draw()
 {
-    DrawCube(pos, dime.x, dime.y, dime.z, col);
+    DrawModel(model, position, 1.0f, color);
 };
 
 void Bullet::move()
 {
-    pos.x += dire.x * bulletSpeed;
-    pos.y += dire.y * bulletSpeed;
-    pos.z += dire.z * bulletSpeed;
+    position.x += direction.x * bulletSpeed;
+    position.y += direction.y * bulletSpeed;
+    position.z += direction.z * bulletSpeed;
 };
