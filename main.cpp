@@ -4,13 +4,49 @@
 #include <math.h>
 #include <cstring>
 #include "Enemy.h"
+#include "Block.h"
 #include ".\include\raylib.h"
 #define RAYMATH_IMPLEMENTATION
 #include ".\include\raymath.h"
 #define RLIGHTS_IMPLEMENTATION
 #include ".\include\rlights.h"
+// #define RLGL_IMPLEMENTATION
+// #include ".\include\rlgl.h"
+#include "./Player.h"
 
 using namespace std;
+
+void displayDataWindow(Player player)
+{
+    // Converts string 'displayString' to char[] to displays it ingame
+    string displayString = "[" +
+                           //    to_string(coutNumber) + "," +
+                           //    to_string(camera.target.x) + "," +
+                           //    to_string(camera.target.y) + "," +
+                           //    to_string(camera.target.z) + "]," +
+                           //    "\n[" +
+                           to_string(player.camera.position.x) + "," +
+                           to_string(player.camera.position.y) + "," +
+                           to_string(player.camera.position.z) + "]," +
+                           //    "\n[" +
+                           //    to_string(cameraDirection.x) + "," +
+                           //    to_string(cameraDirection.y) + "," +
+                           //    to_string(cameraDirection.z) + "]," +
+                           "\n[" +
+                           to_string(player.mouseDeltaSum.x) + "," +
+                           to_string(player.mouseDeltaSum.y) + "]," +
+                           //    "\n[" +
+                           //    to_string(camera.up.x) + "," +
+                           //    to_string(camera.up.y) + "," +
+                           //    to_string(camera.up.z) + "]," +
+                           "";
+    char displayChar[1024];
+    strcpy_s(displayChar, displayString.c_str());
+
+    DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
+    DrawRectangleLines(10, 10, 220, 70, BLUE);
+    DrawText(displayChar, 20, 20, 10, BLACK);
+}
 
 int main(void)
 {
@@ -21,14 +57,7 @@ int main(void)
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "");
 
-    // Camera
-    Camera camera = {0};
-    camera.position = Vector3{4.0f, 2.0f, 4.0f};
-    camera.target = Vector3{0.0f, 1.8f, 0.0f};
-    camera.up = Vector3{0.0f, 1.0f, 0.0f};
-    camera.fovy = 90.0f;
-    camera.projection = CAMERA_PERSPECTIVE;
-    const float cameraSpeed = 0.3f;
+    Player player = Player(0.3f, Vector3{1, 2, 1});
 
     // Shader
     Shader shader = LoadShader("../shaders/base_lighting.vs", "../shaders/lighting.fs");
@@ -48,26 +77,25 @@ int main(void)
     vector<Enemy> enemies = {enemyOne, enemyTwo};
 
     // Groud
-    Model model = LoadModelFromMesh(GenMeshPlane(40.0f, 40.0f, 3, 3));
+    Model model = LoadModelFromMesh(GenMeshPlane(40.0f, 40.0f, 1, 1));
     model.materials[0].shader = shader;
 
-    // Jumping
-    float jumpAcceleration = 1.0f;
-    bool isJumping = false;
+    // test block
+    Block block = Block(Vector3{-5.0f, 2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader);
 
-    Vector2 mouseDeltaSum = {0.0f, 0.0f};
     int coutNumber = 0;
 
-    SetCameraMode(camera, CAMERA_CUSTOM);
+    SetCameraMode(player.camera, CAMERA_CUSTOM);
     SetTargetFPS(60);
     HideCursor();
 
     while (!WindowShouldClose())
     {
         UpdateLightValues(shader, light);
+        player.updateCameraDirection();
 
         // Update the light shader with the camera view position
-        float cameraPos[3] = {camera.position.x, camera.position.y, camera.position.z};
+        float cameraPos[3] = {player.camera.position.x, player.camera.position.y, player.camera.position.z};
         SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 
         if (IsWindowResized())
@@ -76,40 +104,11 @@ int main(void)
             screenHeight = GetScreenHeight();
         }
 
-        Vector3 cameraDirection = {camera.target.x - camera.position.x,
-                                   camera.target.y - camera.position.y,
-                                   camera.target.z - camera.position.z};
-
-        // Converts string 'displayString' to char[] to displays it ingame
-        string displayString = "[" +
-                               //    to_string(coutNumber) + "," +
-                               //    to_string(camera.target.x) + "," +
-                               //    to_string(camera.target.y) + "," +
-                               //    to_string(camera.target.z) + "]," +
-                               //    "\n[" +
-                               to_string(camera.position.x) + "," +
-                               to_string(camera.position.y) + "," +
-                               to_string(camera.position.z) + "]," +
-                               //    "\n[" +
-                               //    to_string(cameraDirection.x) + "," +
-                               //    to_string(cameraDirection.y) + "," +
-                               //    to_string(cameraDirection.z) + "]," +
-                               //    "\n[" +
-                               //    to_string(mouseDeltaSum.x) + "," +
-                               //    to_string(mouseDeltaSum.y) + "]," +
-                               //    "\n[" +
-                               //    to_string(camera.up.x) + "," +
-                               //    to_string(camera.up.y) + "," +
-                               //    to_string(camera.up.z) + "]," +
-                               "";
-        char displayChar[1024];
-        strcpy(displayChar, displayString.c_str());
-
-        UpdateCamera(&camera);
+        UpdateCamera(&player.camera);
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        BeginMode3D(camera);
+        BeginMode3D(player.camera);
 
         // Ground
         DrawModel(model, Vector3Zero(), 1.0f, WHITE);
@@ -130,80 +129,33 @@ int main(void)
                 enemies[i].draw();
         };
 
+        // test block
+        block.draw();
+
         EndMode3D();
 
-        DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-        DrawRectangleLines(10, 10, 220, 70, BLUE);
-        DrawText(displayChar, 20, 20, 10, BLACK);
+        displayDataWindow(player);
 
         EndDrawing();
 
-        // Shooting
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-        {
-            bullets.push_back(Bullet(camera.position, {0.3f, 0.3f, 0.3f}, BLACK, cameraDirection, 0.9f, shader));
-        };
-        // Jumping
+            bullets.push_back(player.shoot(shader));
         if (IsKeyDown(KEY_SPACE))
-        {
-            isJumping = true;
-        };
-        if (isJumping)
-        {
-            camera.position.y += 0.05f + jumpAcceleration;
-            jumpAcceleration += -0.05f;
-            if (camera.position.y < 2.0f)
-            {
-                jumpAcceleration = 1.0f;
-                camera.position.y = 2.0f;
-                isJumping = false;
-            };
-        };
-        // Forward
+            player.jump();
         if (IsKeyDown(KEY_W))
-        {
-            camera.position.x += cameraDirection.x * cameraSpeed;
-            camera.position.z += cameraDirection.z * cameraSpeed;
-        }
-        // Backward
+            player.moveForward();
         if (IsKeyDown(KEY_S))
-        {
-            camera.position.x += -cameraDirection.x * cameraSpeed;
-            camera.position.z += -cameraDirection.z * cameraSpeed;
-        }
-        // Left
+            player.moveBackward();
         if (IsKeyDown(KEY_A))
-        {
-            camera.position.x += (asin(cameraDirection.z) * 0.64f - 0) * cameraSpeed;
-            camera.position.z += (acos(cameraDirection.x) * 0.64f - 1) * cameraSpeed;
-        }
-        // Right
+            player.moveLeft();
         if (IsKeyDown(KEY_D))
-        {
-            camera.position.x += (acos(cameraDirection.z) * 0.64f - 1) * cameraSpeed;
-            camera.position.z += (asin(cameraDirection.x) * 0.64f - 0) * cameraSpeed;
-        }
-
-        // Moving mouse moves camera target/direction
-        Vector2 mouseDelta = GetMouseDelta();
-        SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
-
-        mouseDeltaSum.x -= mouseDelta.x / 800;
-        mouseDeltaSum.y -= mouseDelta.y / 600;
-
-        cameraDirection.x = cos(-mouseDeltaSum.x);
-        cameraDirection.y = tan(mouseDeltaSum.y);
-        cameraDirection.z = sin(-mouseDeltaSum.x);
-
-        camera.target.x = camera.position.x + cameraDirection.x;
-        camera.target.y = camera.position.y + cameraDirection.y;
-        camera.target.z = camera.position.z + cameraDirection.z;
+            player.moveRight();
+        player.updateGravity();
 
         // Prints camera target coordinates when x is pressed
         if (IsKeyDown(KEY_X))
         {
             // cout << displayString << endl;
-            cout << to_string(mouseDeltaSum.x) + "   " + to_string(mouseDeltaSum.y) << endl;
             coutNumber += 1;
         }
     }
@@ -211,6 +163,7 @@ int main(void)
         UnloadModel(enemies[i].model);
     for (int i = 0; i < bullets.size(); i++)
         UnloadModel(bullets[i].model);
+    UnloadModel(block.model);
     UnloadModel(model);
     UnloadShader(shader);
     CloseWindow();

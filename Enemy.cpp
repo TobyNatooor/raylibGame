@@ -3,6 +3,8 @@
 #include <vector>
 #include "Enemy.h"
 #include "Bullet.h"
+// #define RLGL_IMPLEMENTATION
+// #include ".\include\rlgl.h"
 
 Enemy::Enemy(Vector3 _position, Vector3 _dimension, Color _color, Shader shader)
 {
@@ -15,7 +17,11 @@ Enemy::Enemy(Vector3 _position, Vector3 _dimension, Color _color, Shader shader)
 
 void Enemy::draw()
 {
+    // rlPushMatrix();
+    // rlTranslatef(position.x, position.y, position.z);
+    // rlRotatef(45, 0, 0, 0);
     DrawModel(model, position, 1.0f, color);
+    // rlPopMatrix();
 }
 
 void Enemy::drawHit()
