@@ -1,6 +1,6 @@
 #pragma once
-#include <vector>
 #include ".\include\raylib.h"
+#include <vector>
 
 class Bullet
 {

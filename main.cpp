@@ -3,16 +3,14 @@
 #include <vector>
 #include <math.h>
 #include <cstring>
-#include "Enemy.h"
-#include "Block.h"
 #include ".\include\raylib.h"
 #define RAYMATH_IMPLEMENTATION
 #include ".\include\raymath.h"
 #define RLIGHTS_IMPLEMENTATION
 #include ".\include\rlights.h"
-// #define RLGL_IMPLEMENTATION
-// #include ".\include\rlgl.h"
 #include "./Player.h"
+#include "Enemy.h"
+#include "Block.h"
 
 using namespace std;
 
@@ -25,16 +23,16 @@ void displayDataWindow(Player player)
                            //    to_string(camera.target.y) + "," +
                            //    to_string(camera.target.z) + "]," +
                            //    "\n[" +
-                           to_string(player.camera.position.x) + "," +
-                           to_string(player.camera.position.y) + "," +
-                           to_string(player.camera.position.z) + "]," +
-                           //    "\n[" +
-                           //    to_string(cameraDirection.x) + "," +
-                           //    to_string(cameraDirection.y) + "," +
-                           //    to_string(cameraDirection.z) + "]," +
-                           "\n[" +
-                           to_string(player.mouseDeltaSum.x) + "," +
-                           to_string(player.mouseDeltaSum.y) + "]," +
+                              to_string(player.camera.position.x) + "," +
+                              to_string(player.camera.position.y) + "," +
+                              to_string(player.camera.position.z) + "]," +
+                              "\n[" +
+                              to_string(player.cameraDirection.x) + "," +
+                              to_string(player.cameraDirection.y) + "," +
+                              to_string(player.cameraDirection.z) + "]," +
+                            //   "\n[" +
+                            //   to_string(player.mouseDeltaSum.x) + "," +
+                            //   to_string(player.mouseDeltaSum.y) + "]," +
                            //    "\n[" +
                            //    to_string(camera.up.x) + "," +
                            //    to_string(camera.up.y) + "," +
@@ -56,8 +54,6 @@ int main(void)
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "");
-
-    Player player = Player(0.3f, Vector3{1, 2, 1});
 
     // Shader
     Shader shader = LoadShader("../shaders/base_lighting.vs", "../shaders/lighting.fs");
@@ -82,6 +78,10 @@ int main(void)
 
     // test block
     Block block = Block(Vector3{-5.0f, 2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader);
+    Block blockTwo = Block(Vector3{-7.0f, 2.0f, -7.0f}, Vector3{3.0f, 6.0f, 3.0f}, RED, shader);
+    vector<Block> staticBlocks = {block, blockTwo};
+
+    Player player = Player(0.3f, Vector3{1, 2, 1}, staticBlocks);
 
     int coutNumber = 0;
 
@@ -111,7 +111,7 @@ int main(void)
         BeginMode3D(player.camera);
 
         // Ground
-        DrawModel(model, Vector3Zero(), 1.0f, WHITE);
+        DrawModel(model, Vector3{0, -1.5, 0}, 1.0f, WHITE);
 
         // Draws bullets
         for (int i = 0; i < bullets.size(); i++)
@@ -131,6 +131,7 @@ int main(void)
 
         // test block
         block.draw();
+        blockTwo.draw();
 
         EndMode3D();
 
@@ -164,6 +165,7 @@ int main(void)
     for (int i = 0; i < bullets.size(); i++)
         UnloadModel(bullets[i].model);
     UnloadModel(block.model);
+    UnloadModel(blockTwo.model);
     UnloadModel(model);
     UnloadShader(shader);
     CloseWindow();

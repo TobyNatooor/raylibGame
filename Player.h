@@ -1,6 +1,8 @@
-
+#pragma once
 #include ".\include\raylib.h"
 #include "Bullet.h"
+#include <math.h>
+#include "Block.h"
 
 class Player
 {
@@ -13,8 +15,9 @@ public:
     Vector2 mouseDeltaSum;
     float isJumping;
     float jumpAcceleration;
+    std::vector<Block> staticBlocks;
 
-    Player(float _cameraSpeed, Vector3 _dimensions);
+    Player(float _cameraSpeed, Vector3 _dimensions, std::vector<Block> _staticBlocks);
     void updateCameraDirection();
     void moveForward();
     void moveBackward();
@@ -23,4 +26,5 @@ public:
     Bullet shoot(Shader shader);
     void jump();
     void updateGravity();
+    void ifCollisionShortenDistance(Vector3 distance);
 };

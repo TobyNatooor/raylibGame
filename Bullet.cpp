@@ -1,5 +1,3 @@
-#include <vector>
-#include ".\include\raylib.h"
 #include "Bullet.h"
 
 Bullet::Bullet(Vector3 _position, Vector3 _dimension, Color _color, Vector3 _direction, float _BulletSpeed, Shader shader)
