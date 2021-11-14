@@ -26,13 +26,13 @@ void displayDataWindow(Player player)
                               to_string(player.camera.position.x) + "," +
                               to_string(player.camera.position.y) + "," +
                               to_string(player.camera.position.z) + "]," +
-                              "\n[" +
-                              to_string(player.cameraDirection.x) + "," +
-                              to_string(player.cameraDirection.y) + "," +
-                              to_string(player.cameraDirection.z) + "]," +
-                            //   "\n[" +
-                            //   to_string(player.mouseDeltaSum.x) + "," +
-                            //   to_string(player.mouseDeltaSum.y) + "]," +
+                           //    "\n[" +
+                           //    to_string(player.cameraDirection.x) + "," +
+                           //    to_string(player.cameraDirection.y) + "," +
+                           //    to_string(player.cameraDirection.z) + "]," +
+                           //   "\n[" +
+                           //   to_string(player.mouseDeltaSum.x) + "," +
+                           //   to_string(player.mouseDeltaSum.y) + "]," +
                            //    "\n[" +
                            //    to_string(camera.up.x) + "," +
                            //    to_string(camera.up.y) + "," +
@@ -72,15 +72,13 @@ int main(void)
     Enemy enemyTwo = Enemy(Vector3{-16.0f, 8.5f, 0.0f}, Vector3{6.0f, 6.0f, 6.0f}, GREEN, shader);
     vector<Enemy> enemies = {enemyOne, enemyTwo};
 
-    // Groud
-    Model model = LoadModelFromMesh(GenMeshPlane(40.0f, 40.0f, 1, 1));
-    model.materials[0].shader = shader;
-
-    // test block
-    Block block = Block(Vector3{-5.0f, 2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader);
+    // Blocks
+    Block ground = Block(Vector3{0, 0, 0}, Vector3{30.0f, 1.0f, 30.0f}, GREEN, shader);
+    Block blockOne = Block(Vector3{-5.0f, 2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader);
     Block blockTwo = Block(Vector3{-7.0f, 2.0f, -7.0f}, Vector3{3.0f, 6.0f, 3.0f}, RED, shader);
-    vector<Block> staticBlocks = {block, blockTwo};
+    vector<Block> staticBlocks = {ground, blockOne, blockTwo};
 
+    // Player
     Player player = Player(0.3f, Vector3{1, 2, 1}, staticBlocks);
 
     int coutNumber = 0;
@@ -110,17 +108,14 @@ int main(void)
 
         BeginMode3D(player.camera);
 
-        // Ground
-        DrawModel(model, Vector3{0, -1.5, 0}, 1.0f, WHITE);
-
-        // Draws bullets
+        // Draw bullets
         for (int i = 0; i < bullets.size(); i++)
         {
             bullets[i].move();
             bullets[i].draw();
         };
 
-        // Draws enemies
+        // Draw enemies
         for (int i = 0; i < enemies.size(); i++)
         {
             if (enemies[i].isHitByBullets(bullets))
@@ -129,9 +124,11 @@ int main(void)
                 enemies[i].draw();
         };
 
-        // test block
-        block.draw();
-        blockTwo.draw();
+        // Draw blocks
+        for (int i = 0; i < staticBlocks.size(); i++)
+        {
+            staticBlocks[i].draw();
+        };
 
         EndMode3D();
 
@@ -164,9 +161,8 @@ int main(void)
         UnloadModel(enemies[i].model);
     for (int i = 0; i < bullets.size(); i++)
         UnloadModel(bullets[i].model);
-    UnloadModel(block.model);
-    UnloadModel(blockTwo.model);
-    UnloadModel(model);
+    for (int i = 0; i < staticBlocks.size(); i++)
+        UnloadModel(staticBlocks[i].model);
     UnloadShader(shader);
     CloseWindow();
 

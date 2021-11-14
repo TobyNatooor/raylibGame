@@ -1,5 +1,5 @@
-
 #include "./Player.h"
+#include <iostream>
 
 Player::Player(float _cameraSpeed, Vector3 _dimensions, std::vector<Block> _staticBlocks)
 {
@@ -50,6 +50,33 @@ void Player::updateCameraDirection()
     camera.target.z = camera.position.z + cameraDirection.z;
 }
 
+bool Player::isColliding()
+{
+    for (int i = 0; i < staticBlocks.size(); i++)
+        if (staticBlocks[i].hasCollidedWithBlock(camera.position, dimensions))
+            return true;
+    return false;
+}
+
+void Player::moveBackIfCollision(Vector3 distance)
+{
+    if (0 != distance.x)
+    {
+        while (isColliding())
+            camera.position.x += distance.x * -0.1f;
+    }
+    else if (0 != distance.y)
+    {
+        while (isColliding())
+            camera.position.y += distance.y * -0.1f;
+    }
+    else if (0 != distance.z)
+    {
+        while (isColliding())
+            camera.position.z += distance.z * -0.1f;
+    }
+}
+
 Bullet Player::shoot(Shader shader)
 {
     return Bullet(camera.position, Vector3{0.3f, 0.3f, 0.3f}, BLACK, cameraDirection, 0.3f, shader);
@@ -64,71 +91,44 @@ void Player::updateGravity()
 {
     if (isJumping)
     {
-        camera.position.y += 0.05f + jumpAcceleration;
+        float distance = 0.2f + jumpAcceleration;
         jumpAcceleration += -0.05f;
-        if (camera.position.y < dimensions.y)
+        camera.position.y += distance;
+        if (isColliding())
         {
             jumpAcceleration = 1.0f;
-            camera.position.y = dimensions.y;
             isJumping = false;
-        };
+        }
+        moveBackIfCollision(Vector3{0, distance, 0});
     }
+}
+
+void Player::moveXZ(float xDistance, float zDistance)
+{
+    camera.position.x += xDistance;
+    moveBackIfCollision(Vector3{xDistance, 0, 0});
+
+    camera.position.z += zDistance;
+    moveBackIfCollision(Vector3{0, 0, zDistance});
 }
 
 void Player::moveForward()
 {
-    float xDistance = sin(mouseDeltaSum.x) * cameraSpeed;
-    camera.position.x += xDistance;
-    ifCollisionShortenDistance(Vector3{xDistance, 0, 0});
-
-    float zDistance = cos(mouseDeltaSum.x) * cameraSpeed;
-    camera.position.z += zDistance;
-    ifCollisionShortenDistance(Vector3{0, 0, zDistance});
+    moveXZ(sin(mouseDeltaSum.x) * cameraSpeed,
+           cos(mouseDeltaSum.x) * cameraSpeed);
 }
-
 void Player::moveBackward()
 {
-    float xDistance = sin(mouseDeltaSum.x) * cameraSpeed * -1;
-    camera.position.x += xDistance;
-    ifCollisionShortenDistance(Vector3{xDistance, 0, 0});
-
-    float zDistance = cos(mouseDeltaSum.x) * cameraSpeed * -1;
-    camera.position.z += zDistance;
-    ifCollisionShortenDistance(Vector3{0, 0, zDistance});
+    moveXZ(sin(mouseDeltaSum.x) * cameraSpeed * -1,
+           cos(mouseDeltaSum.x) * cameraSpeed * -1);
 }
 void Player::moveLeft()
 {
-    float xDistance = sin(mouseDeltaSum.x + PI / 2) * cameraSpeed;
-    camera.position.x += xDistance;
-    ifCollisionShortenDistance(Vector3{xDistance, 0, 0});
-
-    float zDistance = cos(mouseDeltaSum.x + PI / 2) * cameraSpeed;
-    camera.position.z += zDistance;
-    ifCollisionShortenDistance(Vector3{0, 0, zDistance});
+    moveXZ(sin(mouseDeltaSum.x + PI / 2) * cameraSpeed,
+           cos(mouseDeltaSum.x + PI / 2) * cameraSpeed);
 }
 void Player::moveRight()
 {
-    float xDistance = sin(mouseDeltaSum.x + PI / 2) * cameraSpeed * -1;
-    camera.position.x += xDistance;
-    ifCollisionShortenDistance(Vector3{xDistance, 0, 0});
-
-    float zDistance = cos(mouseDeltaSum.x + PI / 2) * cameraSpeed * -1;
-    camera.position.z += zDistance;
-    ifCollisionShortenDistance(Vector3{0, 0, zDistance});
-}
-
-void Player::ifCollisionShortenDistance(Vector3 distance)
-{
-    if (0 != distance.x)
-        for (int i = 0; i < staticBlocks.size(); i++)
-            while (staticBlocks[i].hasCollidedWithBlock(camera.position, dimensions))
-                camera.position.x += distance.x * -0.1f;
-    else if (0 != distance.y)
-        for (int i = 0; i < staticBlocks.size(); i++)
-            while (staticBlocks[i].hasCollidedWithBlock(camera.position, dimensions))
-                camera.position.y += distance.y * -0.1f;
-    else if (0 != distance.z)
-        for (int i = 0; i < staticBlocks.size(); i++)
-            while (staticBlocks[i].hasCollidedWithBlock(camera.position, dimensions))
-                camera.position.z += distance.z * -0.1f;
+    moveXZ(sin(mouseDeltaSum.x + PI / 2) * cameraSpeed * -1,
+           cos(mouseDeltaSum.x + PI / 2) * cameraSpeed * -1);
 }

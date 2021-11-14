@@ -13,12 +13,13 @@ public:
     Vector3 dimensions;
     Model model;
     Vector2 mouseDeltaSum;
-    float isJumping;
+    bool isJumping;
     float jumpAcceleration;
     std::vector<Block> staticBlocks;
 
     Player(float _cameraSpeed, Vector3 _dimensions, std::vector<Block> _staticBlocks);
     void updateCameraDirection();
+    void moveXZ(float xDistance, float zDistance);
     void moveForward();
     void moveBackward();
     void moveLeft();
@@ -26,5 +27,6 @@ public:
     Bullet shoot(Shader shader);
     void jump();
     void updateGravity();
-    void ifCollisionShortenDistance(Vector3 distance);
+    bool isColliding();
+    void moveBackIfCollision(Vector3 distance);
 };
