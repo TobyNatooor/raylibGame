@@ -8,6 +8,7 @@ Block::Block(Vector3 _position, Vector3 _dimension, Color _color, Shader shader)
     color = _color;
     model = LoadModelFromMesh(GenMeshCube(_dimension.x, _dimension.y, _dimension.z));
     model.materials[0].shader = shader;
+    degrees = 0;
 }
 
 bool Block::hasCollidedWithPoint(Vector3 objPosition)
@@ -61,5 +62,6 @@ bool Block::hasCollidedWithSphere(Vector3 objPosition, Vector3 objDimensions, Ve
 
 void Block::draw()
 {
-    DrawModel(model, position, 1.0f, color);
+    degrees++;
+    DrawModelEx(model, position, Vector3{0, 1, 0}, degrees, Vector3{1, 1, 1}, color);
 }

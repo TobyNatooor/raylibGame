@@ -7,6 +7,7 @@ private:
     Vector3 dimension;
     Color color;
     Vector3 direction;
+    float degrees;
 
 public:
     Vector3 position;
