@@ -18,14 +18,15 @@ void displayDataWindow(Player player)
 {
     // Converts string 'displayString' to char[] to displays it ingame
     string displayString = "[" +
+                           to_string(GetFPS()) + "\n" +
                            //    to_string(coutNumber) + "," +
                            //    to_string(camera.target.x) + "," +
                            //    to_string(camera.target.y) + "," +
                            //    to_string(camera.target.z) + "]," +
                            //    "\n[" +
-                              to_string(player.camera.position.x) + "," +
-                              to_string(player.camera.position.y) + "," +
-                              to_string(player.camera.position.z) + "]," +
+                           to_string(player.camera.position.x) + "," +
+                           to_string(player.camera.position.y) + "," +
+                           to_string(player.camera.position.z) + "]," +
                            //    "\n[" +
                            //    to_string(player.cameraDirection.x) + "," +
                            //    to_string(player.cameraDirection.y) + "," +
@@ -37,6 +38,7 @@ void displayDataWindow(Player player)
                            //    to_string(camera.up.x) + "," +
                            //    to_string(camera.up.y) + "," +
                            //    to_string(camera.up.z) + "]," +
+                           "\n" + to_string(player.isFalling) +
                            "";
     char displayChar[1024];
     strcpy_s(displayChar, displayString.c_str());
@@ -73,7 +75,7 @@ int main(void)
     vector<Enemy> enemies = {enemyOne, enemyTwo};
 
     // Blocks
-    Block ground = Block(Vector3{0, 0, 0}, Vector3{30.0f, 1.0f, 30.0f}, GREEN, shader);
+    Block ground = Block(Vector3{0, -5, 0}, Vector3{30.0f, 3.0f, 30.0f}, GREEN, shader);
     Block blockOne = Block(Vector3{-5.0f, 2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader);
     Block blockTwo = Block(Vector3{-7.0f, 2.0f, -7.0f}, Vector3{3.0f, 6.0f, 3.0f}, RED, shader);
     vector<Block> staticBlocks = {ground, blockOne, blockTwo};

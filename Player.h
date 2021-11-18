@@ -14,7 +14,8 @@ public:
     Model model;
     Vector2 mouseDeltaSum;
     bool isJumping;
-    float jumpAcceleration;
+    bool isFalling;
+    float yAcceleration;
     std::vector<Block> staticBlocks;
 
     Player(float _cameraSpeed, Vector3 _dimensions, std::vector<Block> _staticBlocks);

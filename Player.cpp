@@ -16,7 +16,8 @@ Player::Player(float _cameraSpeed, Vector3 _dimensions, std::vector<Block> _stat
     model = LoadModelFromMesh(GenMeshCube(_dimensions.x, _dimensions.y, _dimensions.z));
 
     isJumping = false;
-    jumpAcceleration = 1.0f;
+    isFalling = true;
+    yAcceleration = 0.8f;
     mouseDeltaSum = {0.0f, 0.0f};
     staticBlocks = _staticBlocks;
 }
@@ -84,22 +85,45 @@ Bullet Player::shoot(Shader shader)
 
 void Player::jump()
 {
+    if (!isJumping)
+        yAcceleration = 0.8f;
     isJumping = true;
 }
 
 void Player::updateGravity()
 {
+    // Detects falling
+    camera.position.y -= 0.1;
+    if (isColliding())
+        isFalling = false;
+    else
+        isFalling = true;
+    camera.position.y += 0.1;
+    // Falling gravity
+
     if (isJumping)
     {
-        float distance = 0.2f + jumpAcceleration;
-        jumpAcceleration += -0.05f;
+        float distance = 0.1f + yAcceleration;
         camera.position.y += distance;
+        yAcceleration += -0.05f;
         if (isColliding())
         {
-            jumpAcceleration = 1.0f;
+            moveBackIfCollision(Vector3{0, distance, 0});
+            yAcceleration = 0.8f;
             isJumping = false;
         }
-        moveBackIfCollision(Vector3{0, distance, 0});
+    }
+    else if (isFalling)
+    {
+        float distance = -0.1f - yAcceleration + 0.8f;
+        camera.position.y += distance;
+        yAcceleration += 0.05f;
+        if (isColliding())
+        {
+            moveBackIfCollision(Vector3{0, distance, 0});
+            yAcceleration = 0.8f;
+            isFalling = false;
+        }
     }
 }
 
