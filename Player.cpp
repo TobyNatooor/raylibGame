@@ -93,19 +93,23 @@ void Player::jump()
 void Player::updateGravity()
 {
     // Detects falling
-    camera.position.y -= 0.1;
+    camera.position.y -= 0.1f;
     if (isColliding())
         isFalling = false;
     else
         isFalling = true;
-    camera.position.y += 0.1;
+    camera.position.y += 0.1f;
     // Falling gravity
-
-    if (isJumping)
+    if (isJumping || isFalling)
     {
-        float distance = 0.1f + yAcceleration;
+        float distance;
+        if (isJumping)
+            distance = 0.1f - yAcceleration + 1.6f;
+        else if (isFalling)
+            distance = -0.1f - yAcceleration + 0.8f;
+
         camera.position.y += distance;
-        yAcceleration += -0.05f;
+        yAcceleration += 0.05f;
         if (isColliding())
         {
             moveBackIfCollision(Vector3{0, distance, 0});
@@ -113,18 +117,18 @@ void Player::updateGravity()
             isJumping = false;
         }
     }
-    else if (isFalling)
-    {
-        float distance = -0.1f - yAcceleration + 0.8f;
-        camera.position.y += distance;
-        yAcceleration += 0.05f;
-        if (isColliding())
-        {
-            moveBackIfCollision(Vector3{0, distance, 0});
-            yAcceleration = 0.8f;
-            isFalling = false;
-        }
-    }
+    // else if (isFalling)
+    // {
+    //     float distance = -0.1f - yAcceleration + 0.8f;
+    //     camera.position.y += distance;
+    //     yAcceleration += 0.05f;
+    //     if (isColliding())
+    //     {
+    //         moveBackIfCollision(Vector3{0, distance, 0});
+    //         yAcceleration = 0.8f;
+    //         isFalling = false;
+    //     }
+    // }
 }
 
 void Player::moveXZ(float xDistance, float zDistance)
