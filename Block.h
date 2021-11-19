@@ -3,13 +3,10 @@
 
 class Block
 {
-private:
-    Vector3 dimension;
-    Color color;
-    Vector3 direction;
-
 public:
+    Vector3 dimension;
     Vector3 position;
+    Color color;
     Model model;
 
     Block(Vector3 _position, Vector3 _dimension, Color _color, Shader shader);

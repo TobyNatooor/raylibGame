@@ -2,15 +2,17 @@
 #include ".\include\raylib.h"
 #include <vector>
 #include "Bullet.h"
+#include "Block.h"
 
-class Enemy
+class Enemy : public Block
 {
 private:
+public:
+    /* using Block::Block; */
+
     Vector3 position;
     Vector3 dimension;
     Material material;
-
-public:
     Model model;
     Color color;
 

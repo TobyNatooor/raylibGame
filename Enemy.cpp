@@ -6,13 +6,9 @@
 // #define RLGL_IMPLEMENTATION
 // #include ".\include\rlgl.h"
 
-Enemy::Enemy(Vector3 _position, Vector3 _dimension, Color _color, Shader shader)
+Enemy::Enemy(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader) : Block(_position, _dimension, _color, _shader)
 {
-    position = _position;
-    dimension = _dimension;
-    color = _color;
-    model = LoadModelFromMesh(GenMeshCube(_dimension.x, _dimension.y, _dimension.z));
-    model.materials[0].shader = shader;
+    int x = 0;
 }
 
 void Enemy::draw()

@@ -1,13 +1,13 @@
 
 #include "./Block.h"
 
-Block::Block(Vector3 _position, Vector3 _dimension, Color _color, Shader shader)
+Block::Block(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader)
 {
     position = _position;
     dimension = _dimension;
     color = _color;
     model = LoadModelFromMesh(GenMeshCube(_dimension.x, _dimension.y, _dimension.z));
-    model.materials[0].shader = shader;
+    model.materials[0].shader = _shader;
 }
 
 bool Block::hasCollidedWithPoint(Vector3 objPosition)
