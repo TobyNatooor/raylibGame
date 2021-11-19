@@ -1,17 +1,12 @@
 #pragma once
-#include ".\include\raylib.h"
+#include "./include/raylib.h"
+#include "./Object.h"
 
-class Block
+class Block : public Object
 {
 public:
-    Vector3 dimension;
-    Vector3 position;
-    Color color;
-    Model model;
-
-    Block(Vector3 _position, Vector3 _dimension, Color _color, Shader shader);
+    Block(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader);
     bool hasCollidedWithPoint(Vector3 objPosition);
     bool hasCollidedWithBlock(Vector3 objPosition, Vector3 objDimensions);
-    bool hasCollidedWithSphere(Vector3 objPosition, Vector3 objDimensions, Vector3 spherePos, float sphereRadius);
-    void draw();
+    bool hasCollidedWithSphere(Vector3 spherePos, float sphereRadius);
 };

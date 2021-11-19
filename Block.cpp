@@ -1,11 +1,7 @@
-
 #include "./Block.h"
 
-Block::Block(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader)
+Block::Block(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader) : Object(_position, _dimension, _color, _shader)
 {
-    position = _position;
-    dimension = _dimension;
-    color = _color;
     model = LoadModelFromMesh(GenMeshCube(_dimension.x, _dimension.y, _dimension.z));
     model.materials[0].shader = _shader;
 }
@@ -45,7 +41,7 @@ bool Block::hasCollidedWithBlock(Vector3 objPosition, Vector3 objDimensions)
     return false;
 }
 
-bool Block::hasCollidedWithSphere(Vector3 objPosition, Vector3 objDimensions, Vector3 spherePos, float sphereRadius)
+bool Block::hasCollidedWithSphere(Vector3 spherePosition, float sphereRadius)
 {
     if (CheckCollisionBoxSphere(
             BoundingBox{Vector3{position.x - dimension.x / 2,
@@ -54,12 +50,7 @@ bool Block::hasCollidedWithSphere(Vector3 objPosition, Vector3 objDimensions, Ve
                         Vector3{position.x + dimension.x / 2,
                                 position.y + dimension.y / 2,
                                 position.z + dimension.z / 2}},
-            spherePos, sphereRadius))
+            spherePosition, sphereRadius))
         return true;
     return false;
-}
-
-void Block::draw()
-{
-    DrawModel(model, position, 1.0f, color);
 }

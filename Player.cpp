@@ -1,24 +1,25 @@
 #include "./Player.h"
-#include <iostream>
 
-Player::Player(float _cameraSpeed, Vector3 _dimensions, std::vector<Block> _staticBlocks)
+Player::Player(Vector3 _position, Vector3 _dimension, Shader _shader, std::vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed)
+    : Block(_position, _dimension, RED, _shader)
 {
     // Camera
     camera = {0};
-    camera.position = Vector3{4.0f, 2.0f, 4.0f};
+    camera.position = _position;
     camera.target = Vector3{0.0f, 1.8f, 0.0f};
     camera.up = Vector3{0.0f, 1.0f, 0.0f};
     camera.fovy = 90.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
-    cameraSpeed = _cameraSpeed;
-    dimensions = _dimensions;
-    model = LoadModelFromMesh(GenMeshCube(_dimensions.x, _dimensions.y, _dimensions.z));
+    dimension = _dimension;
+    model = LoadModelFromMesh(GenMeshCube(_dimension.x, _dimension.y, _dimension.z));
 
     isJumping = false;
     isFalling = true;
-    yAcceleration = 0.8f;
     mouseDeltaSum = {0.0f, 0.0f};
+    movementSpeed = _movementSpeed;
+    yAcceleration = _gravitySpeed;
+    gravitySpeed = _gravitySpeed;
     staticBlocks = _staticBlocks;
 }
 
@@ -26,9 +27,9 @@ void Player::updateCameraDirection()
 {
     DrawBoundingBox(GetModelBoundingBox(model), RED);
 
-    cameraDirection = {camera.target.x - camera.position.x,
-                       camera.target.y - camera.position.y,
-                       camera.target.z - camera.position.z};
+    direction = {camera.target.x - camera.position.x,
+                 camera.target.y - camera.position.y,
+                 camera.target.z - camera.position.z};
 
     Vector2 mouseDelta = GetMouseDelta();
 
@@ -42,19 +43,19 @@ void Player::updateCameraDirection()
     if (mouseDeltaSum.y < -1.57f)
         mouseDeltaSum.y = -1.57f;
 
-    cameraDirection.x = sin(mouseDeltaSum.x);
-    cameraDirection.y = tan(mouseDeltaSum.y);
-    cameraDirection.z = cos(mouseDeltaSum.x);
+    direction.x = sin(mouseDeltaSum.x);
+    direction.y = tan(mouseDeltaSum.y);
+    direction.z = cos(mouseDeltaSum.x);
 
-    camera.target.x = camera.position.x + cameraDirection.x;
-    camera.target.y = camera.position.y + cameraDirection.y;
-    camera.target.z = camera.position.z + cameraDirection.z;
+    camera.target.x = camera.position.x + direction.x;
+    camera.target.y = camera.position.y + direction.y;
+    camera.target.z = camera.position.z + direction.z;
 }
 
 bool Player::isColliding()
 {
     for (int i = 0; i < staticBlocks.size(); i++)
-        if (staticBlocks[i].hasCollidedWithBlock(camera.position, dimensions))
+        if (staticBlocks[i].hasCollidedWithBlock(camera.position, dimension))
             return true;
     return false;
 }
@@ -78,15 +79,10 @@ void Player::moveBackIfCollision(Vector3 distance)
     }
 }
 
-Bullet Player::shoot(Shader shader)
-{
-    return Bullet(camera.position, Vector3{0.3f, 0.3f, 0.3f}, BLACK, cameraDirection, 0.3f, shader);
-}
-
 void Player::jump()
 {
     if (!isJumping)
-        yAcceleration = 0.8f;
+        yAcceleration = gravitySpeed;
     isJumping = true;
 }
 
@@ -104,59 +100,47 @@ void Player::updateGravity()
     {
         float distance;
         if (isJumping)
-            distance = 0.1f - yAcceleration + 1.6f;
+            distance = 0.1f - yAcceleration + gravitySpeed * 2;
         else if (isFalling)
-            distance = -0.1f - yAcceleration + 0.8f;
+            distance = -0.1f - yAcceleration + gravitySpeed;
 
         camera.position.y += distance;
         yAcceleration += 0.05f;
         if (isColliding())
         {
             moveBackIfCollision(Vector3{0, distance, 0});
-            yAcceleration = 0.8f;
+            yAcceleration = gravitySpeed;
             isJumping = false;
         }
     }
-    // else if (isFalling)
-    // {
-    //     float distance = -0.1f - yAcceleration + 0.8f;
-    //     camera.position.y += distance;
-    //     yAcceleration += 0.05f;
-    //     if (isColliding())
-    //     {
-    //         moveBackIfCollision(Vector3{0, distance, 0});
-    //         yAcceleration = 0.8f;
-    //         isFalling = false;
-    //     }
-    // }
 }
 
 void Player::moveXZ(float xDistance, float zDistance)
 {
-    camera.position.x += xDistance;
+    camera.position.x += xDistance * movementSpeed;
     moveBackIfCollision(Vector3{xDistance, 0, 0});
 
-    camera.position.z += zDistance;
+    camera.position.z += zDistance * movementSpeed;
     moveBackIfCollision(Vector3{0, 0, zDistance});
 }
 
 void Player::moveForward()
 {
-    moveXZ(sin(mouseDeltaSum.x) * cameraSpeed,
-           cos(mouseDeltaSum.x) * cameraSpeed);
+    moveXZ(sin(mouseDeltaSum.x),
+           cos(mouseDeltaSum.x));
 }
 void Player::moveBackward()
 {
-    moveXZ(sin(mouseDeltaSum.x) * cameraSpeed * -1,
-           cos(mouseDeltaSum.x) * cameraSpeed * -1);
+    moveXZ(sin(mouseDeltaSum.x) * -1,
+           cos(mouseDeltaSum.x) * -1);
 }
 void Player::moveLeft()
 {
-    moveXZ(sin(mouseDeltaSum.x + PI / 2) * cameraSpeed,
-           cos(mouseDeltaSum.x + PI / 2) * cameraSpeed);
+    moveXZ(sin(mouseDeltaSum.x + PI / 2),
+           cos(mouseDeltaSum.x + PI / 2));
 }
 void Player::moveRight()
 {
-    moveXZ(sin(mouseDeltaSum.x + PI / 2) * cameraSpeed * -1,
-           cos(mouseDeltaSum.x + PI / 2) * cameraSpeed * -1);
+    moveXZ(sin(mouseDeltaSum.x + PI / 2) * -1,
+           cos(mouseDeltaSum.x + PI / 2) * -1);
 }

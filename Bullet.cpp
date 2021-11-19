@@ -1,19 +1,13 @@
 #include "Bullet.h"
 
-Bullet::Bullet(Vector3 _position, Vector3 _dimension, Color _color, Vector3 _direction, float _BulletSpeed, Shader shader)
+Bullet::Bullet(Vector3 _position, Color _color, Shader _shader, Vector3 _direction, float _BulletSpeed, float _radius)
+    : Object(_position, Vector3{0, 0, 0}, _color, _shader)
 {
-    position = _position;
-    dimension = _dimension;
     direction = _direction;
-    color = _color;
     bulletSpeed = _BulletSpeed;
-    model = LoadModelFromMesh(GenMeshSphere(0.3f, 5, 15));
-    model.materials[0].shader = shader;
-};
-
-void Bullet::draw()
-{
-    DrawModel(model, position, 1.0f, color);
+    radius = _radius;
+    model = LoadModelFromMesh(GenMeshSphere(_radius, 5, 15));
+    model.materials[0].shader = _shader;
 };
 
 void Bullet::move()

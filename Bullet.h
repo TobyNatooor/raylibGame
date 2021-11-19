@@ -1,20 +1,14 @@
 #pragma once
-#include ".\include\raylib.h"
-#include <vector>
+#include "./include/raylib.h"
+#include "./Object.h"
 
-class Bullet
+class Bullet : public Object
 {
-private:
-    Vector3 dimension;
-    Color color;
+public:
     Vector3 direction;
     float bulletSpeed;
+    float radius;
 
-public:
-    Vector3 position;
-    Model model;
-
-    Bullet(Vector3 _position, Vector3 _dimension, Color _color, Vector3 _direction, float _BulletSpeed, Shader shader);
-    void draw();
+    Bullet(Vector3 _position, Color _color, Shader _shader, Vector3 _direction, float _BulletSpeed, float _radius);
     void move();
 };

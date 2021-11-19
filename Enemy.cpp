@@ -1,23 +1,8 @@
-#include ".\include\raylib.h"
-#include ".\include\raymath.h"
-#include <vector>
 #include "Enemy.h"
-#include "Bullet.h"
-// #define RLGL_IMPLEMENTATION
-// #include ".\include\rlgl.h"
 
-Enemy::Enemy(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader) : Block(_position, _dimension, _color, _shader)
+Enemy::Enemy(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader)
+    : Block(_position, _dimension, _color, _shader)
 {
-    int x = 0;
-}
-
-void Enemy::draw()
-{
-    // rlPushMatrix();
-    // rlTranslatef(position.x, position.y, position.z);
-    // rlRotatef(45, 0, 0, 0);
-    DrawModel(model, position, 1.0f, color);
-    // rlPopMatrix();
 }
 
 void Enemy::drawHit()
@@ -27,21 +12,10 @@ void Enemy::drawHit()
 
 bool Enemy::isHitByBullets(std::vector<Bullet> bullets)
 {
-    Vector3 enemyCornerOne = {position.x - dimension.x / 2,
-                              position.y - dimension.y / 2,
-                              position.z - dimension.z / 2};
-    Vector3 enemyCornerTwo = {position.x + dimension.x / 2,
-                              position.y + dimension.y / 2,
-                              position.z + dimension.z / 2};
-
     for (int i = 0; i < bullets.size(); i++)
     {
-        if (enemyCornerOne.x < bullets[i].position.x && bullets[i].position.x < enemyCornerTwo.x &&
-            enemyCornerOne.y < bullets[i].position.y && bullets[i].position.y < enemyCornerTwo.y &&
-            enemyCornerOne.z < bullets[i].position.z && bullets[i].position.z < enemyCornerTwo.z)
-        {
+        if (Block::hasCollidedWithSphere(bullets[i].position, bullets[i].radius))
             return true;
-        }
     }
     return false;
 };

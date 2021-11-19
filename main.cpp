@@ -3,11 +3,9 @@
 #include <vector>
 #include <math.h>
 #include <cstring>
-#include ".\include\raylib.h"
-#define RAYMATH_IMPLEMENTATION
-#include ".\include\raymath.h"
+#include "./include/raylib.h"
 #define RLIGHTS_IMPLEMENTATION
-#include ".\include\rlights.h"
+#include "./include/rlights.h"
 #include "./Player.h"
 #include "Enemy.h"
 #include "Block.h"
@@ -19,7 +17,6 @@ void displayDataWindow(Player player)
     // Converts string 'displayString' to char[] to displays it ingame
     string displayString = "[" +
                            to_string(GetFPS()) + "\n" +
-                           //    to_string(coutNumber) + "," +
                            //    to_string(camera.target.x) + "," +
                            //    to_string(camera.target.y) + "," +
                            //    to_string(camera.target.z) + "]," +
@@ -28,17 +25,13 @@ void displayDataWindow(Player player)
                            to_string(player.camera.position.y) + "," +
                            to_string(player.camera.position.z) + "]," +
                            //    "\n[" +
-                           //    to_string(player.cameraDirection.x) + "," +
-                           //    to_string(player.cameraDirection.y) + "," +
-                           //    to_string(player.cameraDirection.z) + "]," +
+                           //    to_string(player.direction.x) + "," +
+                           //    to_string(player.direction.y) + "," +
+                           //    to_string(player.direction.z) + "]," +
                            //   "\n[" +
                            //   to_string(player.mouseDeltaSum.x) + "," +
                            //   to_string(player.mouseDeltaSum.y) + "]," +
-                           //    "\n[" +
-                           //    to_string(camera.up.x) + "," +
-                           //    to_string(camera.up.y) + "," +
-                           //    to_string(camera.up.z) + "]," +
-                           "\n" + to_string(player.isFalling) +
+                           //    "\n" + to_string(player.isFalling) +
                            "";
     char displayChar[1024];
     strcpy_s(displayChar, displayString.c_str());
@@ -55,7 +48,7 @@ int main(void)
 
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(screenWidth, screenHeight, "");
+    InitWindow(screenWidth, screenHeight, "C++ Game");
 
     // Shader
     Shader shader = LoadShader("../shaders/base_lighting.vs", "../shaders/lighting.fs");
@@ -81,9 +74,7 @@ int main(void)
     vector<Block> staticBlocks = {ground, blockOne, blockTwo};
 
     // Player
-    Player player = Player(0.3f, Vector3{1, 2, 1}, staticBlocks);
-
-    int coutNumber = 0;
+    Player player = Player(Vector3{4.0f, 2.0f, 4.0f}, Vector3{1.0f, 2.0f, 1.0f}, shader, staticBlocks, 0.2f, 0.8f);
 
     SetCameraMode(player.camera, CAMERA_CUSTOM);
     SetTargetFPS(60);
@@ -94,7 +85,6 @@ int main(void)
         UpdateLightValues(shader, light);
         player.updateCameraDirection();
 
-        // Update the light shader with the camera view position
         float cameraPos[3] = {player.camera.position.x, player.camera.position.y, player.camera.position.z};
         SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 
@@ -139,7 +129,10 @@ int main(void)
         EndDrawing();
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-            bullets.push_back(player.shoot(shader));
+        {
+            Bullet bullet = Bullet(player.camera.position, BLACK, shader, player.direction, 0.3f, 0.3f);
+            bullets.push_back(bullet);
+        }
         if (IsKeyDown(KEY_SPACE))
             player.jump();
         if (IsKeyDown(KEY_W))
@@ -151,13 +144,6 @@ int main(void)
         if (IsKeyDown(KEY_D))
             player.moveRight();
         player.updateGravity();
-
-        // Prints camera target coordinates when x is pressed
-        if (IsKeyDown(KEY_X))
-        {
-            // cout << displayString << endl;
-            coutNumber += 1;
-        }
     }
     for (int i = 0; i < enemies.size(); i++)
         UnloadModel(enemies[i].model);
