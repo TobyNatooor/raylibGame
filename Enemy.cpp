@@ -10,7 +10,7 @@ void Enemy::drawHit()
     DrawModel(model, position, 1.0f, RED);
 }
 
-bool Enemy::isHitByBullets(std::vector<Bullet> bullets)
+bool Enemy::isHitByBullets(vector<Bullet> bullets)
 {
     for (Bullet &bullet : bullets)
     {

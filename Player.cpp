@@ -1,14 +1,14 @@
 #include "./Player.h"
 
-Player::Player(Vector3 _position, Vector3 _dimension, Shader _shader, std::vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed)
+Player::Player(Vector3 _position, Vector3 _dimension, Shader _shader, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight)
     : Block(_position, _dimension, RED, _shader)
 {
     // Camera
     camera = {0};
     camera.position = _position;
-    camera.target = Vector3{0.0f, 1.8f, 0.0f};
+    camera.target = Vector3{0.0f, 0.0f, 0.0f};
     camera.up = Vector3{0.0f, 1.0f, 0.0f};
-    camera.fovy = 90.0f;
+    camera.fovy = 120.0f;
     camera.projection = CAMERA_PERSPECTIVE;
 
     dimension = _dimension;
@@ -18,8 +18,9 @@ Player::Player(Vector3 _position, Vector3 _dimension, Shader _shader, std::vecto
     isFalling = true;
     mouseDeltaSum = {0.0f, 0.0f};
     movementSpeed = _movementSpeed;
-    yAcceleration = _gravitySpeed;
     gravitySpeed = _gravitySpeed;
+    jumpHeight = _jumpHeight;
+    yAcceleration = _jumpHeight;
     staticBlocks = _staticBlocks;
 }
 
@@ -36,13 +37,13 @@ void Player::updateCameraDirection()
     if (mouseDeltaSum.y < -1.57f)
         mouseDeltaSum.y = -1.57f;
 
-    direction.x = sin(mouseDeltaSum.x);
-    direction.y = tan(mouseDeltaSum.y);
-    direction.z = cos(mouseDeltaSum.x);
+    direction = Vector3{sinf(mouseDeltaSum.x),
+                        tanf(mouseDeltaSum.y),
+                        cosf(mouseDeltaSum.x)};
 
-    camera.target.x = camera.position.x + direction.x;
-    camera.target.y = camera.position.y + direction.y;
-    camera.target.z = camera.position.z + direction.z;
+    camera.target = Vector3{camera.position.x + direction.x,
+                            camera.position.y + direction.y,
+                            camera.position.z + direction.z};
 }
 
 bool Player::isColliding()
@@ -75,7 +76,7 @@ void Player::moveBackIfCollision(Vector3 distance)
 void Player::jump()
 {
     if (!isJumping)
-        yAcceleration = gravitySpeed;
+        yAcceleration = jumpHeight;
     isJumping = true;
 }
 
@@ -93,16 +94,16 @@ void Player::updateGravity()
     {
         float distance;
         if (isJumping)
-            distance = 0.1f - yAcceleration + gravitySpeed * 2;
+            distance = -yAcceleration + jumpHeight * 2;
         else if (isFalling)
-            distance = -0.1f - yAcceleration + gravitySpeed;
+            distance = -yAcceleration + jumpHeight;
 
         camera.position.y += distance;
-        yAcceleration += 0.05f;
+        yAcceleration += gravitySpeed;
         if (isColliding())
         {
             moveBackIfCollision(Vector3{0, distance, 0});
-            yAcceleration = gravitySpeed;
+            yAcceleration = jumpHeight;
             isJumping = false;
         }
     }

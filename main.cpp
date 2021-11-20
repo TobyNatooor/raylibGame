@@ -15,24 +15,25 @@ using namespace std;
 void displayDataWindow(Player player)
 {
     // Converts string 'displayString' to char[] to displays it ingame
-    string displayString = "[" +
-                           to_string(GetFPS()) + "\n" +
-                           //    to_string(camera.target.x) + "," +
-                           //    to_string(camera.target.y) + "," +
-                           //    to_string(camera.target.z) + "]," +
-                           //    "\n[" +
-                           to_string(player.camera.position.x) + "," +
-                           to_string(player.camera.position.y) + "," +
-                           to_string(player.camera.position.z) + "]," +
-                           //    "\n[" +
-                           //    to_string(player.direction.x) + "," +
-                           //    to_string(player.direction.y) + "," +
-                           //    to_string(player.direction.z) + "]," +
-                           //   "\n[" +
-                           //   to_string(player.mouseDeltaSum.x) + "," +
-                           //   to_string(player.mouseDeltaSum.y) + "]," +
-                           //    "\n" + to_string(player.isFalling) +
-                           "";
+    string displayString =
+        to_string(GetFPS()) + "\n" +
+        "[" +
+        to_string(player.camera.target.x) + "," +
+        to_string(player.camera.target.y) + "," +
+        to_string(player.camera.target.z) + "]," +
+        "\n[" +
+        to_string(player.camera.position.x) + "," +
+        to_string(player.camera.position.y) + "," +
+        to_string(player.camera.position.z) + "]," +
+        //    "\n[" +
+        //    to_string(player.direction.x) + "," +
+        //    to_string(player.direction.y) + "," +
+        //    to_string(player.direction.z) + "]," +
+        //   "\n[" +
+        //   to_string(player.mouseDeltaSum.x) + "," +
+        //   to_string(player.mouseDeltaSum.y) + "]," +
+        //    "\n" + to_string(player.isFalling) +
+        "";
     char displayChar[1024];
     strcpy_s(displayChar, displayString.c_str());
 
@@ -74,7 +75,7 @@ int main(void)
     vector<Block> staticBlocks = {ground, blockOne, blockTwo};
 
     // Player
-    Player player = Player(Vector3{4.0f, 2.0f, 4.0f}, Vector3{1.0f, 2.0f, 1.0f}, shader, staticBlocks, 0.2f, 0.8f);
+    Player player = Player(Vector3{0.0f, 0.0f, 0.0f}, Vector3{1.0f, 2.0f, 1.0f}, shader, staticBlocks, 0.1f, 0.015f, 0.6f);
 
     SetCameraMode(player.camera, CAMERA_CUSTOM);
     SetTargetFPS(60);

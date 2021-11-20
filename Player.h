@@ -5,6 +5,8 @@
 #include "Bullet.h"
 #include "Block.h"
 
+using std::vector;
+
 class Player : public Block
 {
 public:
@@ -14,11 +16,12 @@ public:
     float yAcceleration;
     float movementSpeed;
     float gravitySpeed;
+    float jumpHeight;
     bool isJumping;
     bool isFalling;
-    std::vector<Block> staticBlocks;
+    vector<Block> staticBlocks;
 
-    Player(Vector3 _position, Vector3 _dimension, Shader _shader, std::vector<Block> _staticBlocks, float _movementSpeed, float _jumpHeight);
+    Player(Vector3 _position, Vector3 _dimension, Shader _shader, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight);
     void updateCameraDirection();
     void moveXZ(float xDistance, float zDistance);
     void moveForward();
