@@ -1,6 +1,7 @@
 #include "./Block.h"
 
-Block::Block(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader) : Object(_position, _dimension, _color, _shader)
+Block::Block(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader)
+    : Object(_position, _dimension, _color, _shader)
 {
     model = LoadModelFromMesh(GenMeshCube(_dimension.x, _dimension.y, _dimension.z));
     model.materials[0].shader = _shader;

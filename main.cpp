@@ -101,25 +101,25 @@ int main(void)
         BeginMode3D(player.camera);
 
         // Draw bullets
-        for (int i = 0; i < bullets.size(); i++)
+        for (Bullet &bullet : bullets)
         {
-            bullets[i].move();
-            bullets[i].draw();
+            bullet.move();
+            bullet.draw();
         };
 
         // Draw enemies
-        for (int i = 0; i < enemies.size(); i++)
+        for (Enemy &enemy : enemies)
         {
-            if (enemies[i].isHitByBullets(bullets))
-                enemies[i].drawHit();
+            if (enemy.isHitByBullets(bullets))
+                enemy.drawHit();
             else
-                enemies[i].draw();
+                enemy.draw();
         };
 
         // Draw blocks
-        for (int i = 0; i < staticBlocks.size(); i++)
+        for (Block &staticBlock : staticBlocks)
         {
-            staticBlocks[i].draw();
+            staticBlock.draw();
         };
 
         EndMode3D();
@@ -145,12 +145,12 @@ int main(void)
             player.moveRight();
         player.updateGravity();
     }
-    for (int i = 0; i < enemies.size(); i++)
-        UnloadModel(enemies[i].model);
-    for (int i = 0; i < bullets.size(); i++)
-        UnloadModel(bullets[i].model);
-    for (int i = 0; i < staticBlocks.size(); i++)
-        UnloadModel(staticBlocks[i].model);
+    for (Bullet &bullet : bullets)
+        UnloadModel(bullet.model);
+    for (Enemy &enemy : enemies)
+        UnloadModel(enemy.model);
+    for (Block &staticBlock : staticBlocks)
+        UnloadModel(staticBlock.model);
     UnloadShader(shader);
     CloseWindow();
 

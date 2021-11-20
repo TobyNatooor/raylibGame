@@ -12,9 +12,9 @@ void Enemy::drawHit()
 
 bool Enemy::isHitByBullets(std::vector<Bullet> bullets)
 {
-    for (int i = 0; i < bullets.size(); i++)
+    for (Bullet &bullet : bullets)
     {
-        if (Block::hasCollidedWithSphere(bullets[i].position, bullets[i].radius))
+        if (Block::hasCollidedWithSphere(bullet.position, bullet.radius))
             return true;
     }
     return false;

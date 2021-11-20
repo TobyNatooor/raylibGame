@@ -25,14 +25,7 @@ Player::Player(Vector3 _position, Vector3 _dimension, Shader _shader, std::vecto
 
 void Player::updateCameraDirection()
 {
-    DrawBoundingBox(GetModelBoundingBox(model), RED);
-
-    direction = {camera.target.x - camera.position.x,
-                 camera.target.y - camera.position.y,
-                 camera.target.z - camera.position.z};
-
     Vector2 mouseDelta = GetMouseDelta();
-
     SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
 
     mouseDeltaSum.x -= mouseDelta.x / 800;
@@ -54,8 +47,8 @@ void Player::updateCameraDirection()
 
 bool Player::isColliding()
 {
-    for (int i = 0; i < staticBlocks.size(); i++)
-        if (staticBlocks[i].hasCollidedWithBlock(camera.position, dimension))
+    for (Block &staticBlock : staticBlocks)
+        if (staticBlock.hasCollidedWithBlock(camera.position, dimension))
             return true;
     return false;
 }
