@@ -75,7 +75,7 @@ int main(void)
     vector<Block> staticBlocks = {ground, blockOne, blockTwo};
 
     // Player
-    Player player = Player(Vector3{0.0f, 0.0f, 0.0f}, Vector3{1.0f, 2.0f, 1.0f}, shader, staticBlocks, 0.1f, 0.015f, 0.6f);
+    Player player = Player(Vector3{0.0f, 0.0f, 0.0f}, Vector3{1.0f, 2.0f, 1.0f}, shader, staticBlocks, 0.15f, 0.02f, 0.6f);
 
     SetCameraMode(player.camera, CAMERA_CUSTOM);
     SetTargetFPS(60);

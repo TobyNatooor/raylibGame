@@ -8,11 +8,8 @@ Player::Player(Vector3 _position, Vector3 _dimension, Shader _shader, vector<Blo
     camera.position = _position;
     camera.target = Vector3{0.0f, 0.0f, 0.0f};
     camera.up = Vector3{0.0f, 1.0f, 0.0f};
-    camera.fovy = 120.0f;
+    camera.fovy = 110.0f;
     camera.projection = CAMERA_PERSPECTIVE;
-
-    dimension = _dimension;
-    model = LoadModelFromMesh(GenMeshCube(_dimension.x, _dimension.y, _dimension.z));
 
     isJumping = false;
     isFalling = true;
