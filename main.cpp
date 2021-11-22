@@ -3,43 +3,43 @@
 #include <vector>
 #include <math.h>
 #include <cstring>
-#include "./include/raylib.h"
+#include "raylib.h"
 #define RLIGHTS_IMPLEMENTATION
-#include "./include/rlights.h"
-#include "./Player.h"
+#include "rlights.h"
+#include "Player.h"
 #include "Enemy.h"
 #include "Block.h"
 
 using namespace std;
 
-void displayDataWindow(Player player)
-{
-    // Converts string 'displayString' to char[] to displays it ingame
-    string displayString = "[" +
-                           to_string(GetFPS()) + "\n" +
-                           //    to_string(camera.target.x) + "," +
-                           //    to_string(camera.target.y) + "," +
-                           //    to_string(camera.target.z) + "]," +
-                           //    "\n[" +
-                           to_string(player.camera.position.x) + "," +
-                           to_string(player.camera.position.y) + "," +
-                           to_string(player.camera.position.z) + "]," +
-                           //    "\n[" +
-                           //    to_string(player.direction.x) + "," +
-                           //    to_string(player.direction.y) + "," +
-                           //    to_string(player.direction.z) + "]," +
-                           //   "\n[" +
-                           //   to_string(player.mouseDeltaSum.x) + "," +
-                           //   to_string(player.mouseDeltaSum.y) + "]," +
-                           //    "\n" + to_string(player.isFalling) +
-                           "";
-    char displayChar[1024];
-    strcpy_s(displayChar, displayString.c_str());
+// void displayDataWindow(Player player)
+// {
+//     // Converts string 'displayString' to char[] to displays it ingame
+//     string displayString = "[" +
+//                            to_string(GetFPS()) + "\n" +
+//                            //    to_string(camera.target.x) + "," +
+//                            //    to_string(camera.target.y) + "," +
+//                            //    to_string(camera.target.z) + "]," +
+//                            //    "\n[" +
+//                            to_string(player.camera.position.x) + "," +
+//                            to_string(player.camera.position.y) + "," +
+//                            to_string(player.camera.position.z) + "]," +
+//                            //    "\n[" +
+//                            //    to_string(player.direction.x) + "," +
+//                            //    to_string(player.direction.y) + "," +
+//                            //    to_string(player.direction.z) + "]," +
+//                            //   "\n[" +
+//                            //   to_string(player.mouseDeltaSum.x) + "," +
+//                            //   to_string(player.mouseDeltaSum.y) + "]," +
+//                            //    "\n" + to_string(player.isFalling) +
+//                            "";
+//     char displayChar[1024];
+//     strcpy_s(displayChar, displayString.c_str());
 
-    DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-    DrawRectangleLines(10, 10, 220, 70, BLUE);
-    DrawText(displayChar, 20, 20, 10, BLACK);
-}
+//     DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
+//     DrawRectangleLines(10, 10, 220, 70, BLUE);
+//     DrawText(displayChar, 20, 20, 10, BLACK);
+// }
 
 int main(void)
 {
@@ -51,7 +51,7 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "C++ Game");
 
     // Shader
-    Shader shader = LoadShader("../shaders/base_lighting.vs", "../shaders/lighting.fs");
+    Shader shader = LoadShader("./shaders/base_lighting.vs", "./shaders/lighting.fs");
     shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
     const int ambientLoc = GetShaderLocation(shader, "ambient");
     const float floatValue[4] = {0.1f, 0.1f, 0.1f, 1.0f};
@@ -124,7 +124,7 @@ int main(void)
 
         EndMode3D();
 
-        displayDataWindow(player);
+        // displayDataWindow(player);
 
         EndDrawing();
 

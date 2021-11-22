@@ -1,4 +1,4 @@
-#include "./Player.h"
+#include "Player.h"
 
 Player::Player(Vector3 _position, Vector3 _dimension, Shader _shader, std::vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed)
     : Block(_position, _dimension, RED, _shader)
