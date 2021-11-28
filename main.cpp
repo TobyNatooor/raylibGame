@@ -12,35 +12,35 @@
 
 using namespace std;
 
-void displayDataWindow(Player player)
-{
-    // Converts string 'displayString' to char[] to displays it ingame
-    string displayString =
-        to_string(GetFPS()) + "\n" +
-        "[" +
-        to_string(player.camera.target.x) + "," +
-        to_string(player.camera.target.y) + "," +
-        to_string(player.camera.target.z) + "]," +
-        "\n[" +
-        to_string(player.camera.position.x) + "," +
-        to_string(player.camera.position.y) + "," +
-        to_string(player.camera.position.z) + "]," +
-        //    "\n[" +
-        //    to_string(player.direction.x) + "," +
-        //    to_string(player.direction.y) + "," +
-        //    to_string(player.direction.z) + "]," +
-        //   "\n[" +
-        //   to_string(player.mouseDeltaSum.x) + "," +
-        //   to_string(player.mouseDeltaSum.y) + "]," +
-        //    "\n" + to_string(player.isFalling) +
-        "";
-    char displayChar[1024];
-    strcpy_s(displayChar, displayString.c_str());
+// void displayDataWindow(Player player)
+// {
+//     // Converts string 'displayString' to char[] to displays it ingame
+//     string displayString =
+//         to_string(GetFPS()) + "\n" +
+//         "[" +
+//         to_string(player.camera.target.x) + "," +
+//         to_string(player.camera.target.y) + "," +
+//         to_string(player.camera.target.z) + "]," +
+//         "\n[" +
+//         to_string(player.camera.position.x) + "," +
+//         to_string(player.camera.position.y) + "," +
+//         to_string(player.camera.position.z) + "]," +
+//         //    "\n[" +
+//         //    to_string(player.direction.x) + "," +
+//         //    to_string(player.direction.y) + "," +
+//         //    to_string(player.direction.z) + "]," +
+//         //   "\n[" +
+//         //   to_string(player.mouseDeltaSum.x) + "," +
+//         //   to_string(player.mouseDeltaSum.y) + "]," +
+//         //    "\n" + to_string(player.isFalling) +
+//         "";
+//     char displayChar[1024];
+//     strcpy_s(displayChar, displayString.c_str());
 
-    DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-    DrawRectangleLines(10, 10, 220, 70, BLUE);
-    DrawText(displayChar, 20, 20, 10, BLACK);
-}
+//     DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
+//     DrawRectangleLines(10, 10, 220, 70, BLUE);
+//     DrawText(displayChar, 20, 20, 10, BLACK);
+// }
 
 int main(void)
 {
@@ -125,7 +125,7 @@ int main(void)
 
         EndMode3D();
 
-        displayDataWindow(player);
+        // displayDataWindow(player);
 
         EndDrawing();
 
