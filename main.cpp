@@ -70,7 +70,7 @@ int main(void)
 
     // Blocks
     Block ground = Block(Vector3{0, -5, 0}, Vector3{30.0f, 3.0f, 30.0f}, GREEN, shader);
-    Block blockOne = Block(Vector3{-5.0f, 2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader);
+    Block blockOne = Block(Vector3{-5.0f, -2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader);
     Block blockTwo = Block(Vector3{-7.0f, 2.0f, -7.0f}, Vector3{3.0f, 6.0f, 3.0f}, RED, shader);
     vector<Block> staticBlocks = {ground, blockOne, blockTwo};
 

@@ -3,6 +3,7 @@
 
 class Object
 {
+    
 public:
     Vector3 dimension;
     Vector3 position;
