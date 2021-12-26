@@ -3,6 +3,7 @@
 #include "./include/raylib.h"
 #include "Object.h"
 #include "Block.h"
+#include <iostream>
 
 using std::vector;
 
@@ -20,7 +21,7 @@ public:
     bool isFalling;
     vector<Block> staticBlocks;
 
-    Entity(Vector3 _position, Vector3 _dimension, Shader _shader, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight);
+    Entity(Vector3 _position, Vector3 _dimension, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight);
     void moveXZ(float xDistance, float zDistance);
     void jump();
     void updateGravity();

@@ -1,9 +1,9 @@
 #include "Entity.h"
 
-Entity::Entity(Vector3 _position, Vector3 _dimension, Shader _shader, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight)
-    : Object(_position, _dimension, RED, _shader)
+Entity::Entity(Vector3 _position, Vector3 _dimension, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight)
+    : Object(_position, _dimension, RED)
 {
-
+    std::cout << "xxx\n";
 }
 
 bool Entity::isColliding()

@@ -1,6 +1,6 @@
 #include "./Object.h"
 
-Object::Object(Vector3 _position, Vector3 _dimension, Color _color, Shader _shader)
+Object::Object(Vector3 _position, Vector3 _dimension, Color _color)
 {
     dimension = _dimension;
     position = _position;

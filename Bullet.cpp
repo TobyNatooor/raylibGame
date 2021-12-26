@@ -1,7 +1,7 @@
 #include "Bullet.h"
 
 Bullet::Bullet(Vector3 _position, Color _color, Shader _shader, Vector3 _direction, float _BulletSpeed, float _radius)
-    : Object(_position, Vector3{0, 0, 0}, _color, _shader)
+    : Object(_position, Vector3{0, 0, 0}, _color)
 {
     direction = _direction;
     bulletSpeed = _BulletSpeed;
