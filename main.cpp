@@ -1,9 +1,10 @@
 #include "main.h"
 
-// #define WEB_BUILD
+#define WEB_BUILD
 
 #if defined(WEB_BUILD)
 #include "C:\emsdk\upstream\emscripten\system\include\emscripten\emscripten.h"
+// #include "C:\emsdk\upstream\emscripten\system\include\emscripten\html5.h"
 #endif
 
 using namespace std;
@@ -24,6 +25,7 @@ MainLoop::MainLoop(vector<Block> _staticBlocks,
 void MainLoop::loop()
 {
     UpdateLightValues(shader, light);
+    
     player.updateCameraDirection();
 
     float cameraPos[3] = {player.camera.position.x, player.camera.position.y, player.camera.position.z};
@@ -159,8 +161,14 @@ MainLoop Init()
 
     SetCameraMode(player.camera, CAMERA_CUSTOM);
     SetTargetFPS(60);
+    DisableCursor();
     HideCursor();
-    // void DisableCursor(void);
+
+    // #if defined(WEB_BUILD)
+    //     DisableCursor();
+    // #else
+    //     HideCursor();
+    // #endif
 
     return MainLoop(staticBlocks, enemies, bullets, player, shader, light);
 }
@@ -176,6 +184,7 @@ int main(void)
 {
 
 #if defined(WEB_BUILD)
+    // emscripten_request_pointerlock();
     emscripten_set_main_loop(c_loop, 60, 1);
 #else
     while (!WindowShouldClose())

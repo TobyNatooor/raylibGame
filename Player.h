@@ -1,7 +1,7 @@
 #pragma once
 #include <math.h>
 #include <vector>
-#include "./include/raylib.h"
+#include "./include/raylib/raylib.h"
 #include "Bullet.h"
 #include "Block.h"
 #include "Entity.h"

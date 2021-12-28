@@ -4,9 +4,9 @@
 #include <vector>
 #include <math.h>
 #include <cstring>
-#include "./include/raylib.h"
+#include "./include/raylib/raylib.h"
 #define RLIGHTS_IMPLEMENTATION
-#include "./include/rlights.h"
+#include "./include/raylib/rlights.h"
 #include "./Player.h"
 #include "Enemy.h"
 #include "Block.h"
