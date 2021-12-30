@@ -2,4 +2,5 @@ buildweb/*.wasm
 buildweb/*.html
 buildweb/*.js
 build/game.exe
-.vscode/
+.vscode/launch.json
+.vscode/settings.json

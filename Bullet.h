@@ -1,6 +1,6 @@
 #pragma once
-#include "./include/raylib/raylib.h"
-#include "./Object.h"
+#include <raylib.h>
+#include "Object.h"
 
 class Bullet : public Object
 {

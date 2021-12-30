@@ -1,17 +1,16 @@
+#pragma once
 #include "main.h"
 
-#define WEB_BUILD
+// #define WEB_BUILD
 
 #if defined(WEB_BUILD)
-#include "C:\emsdk\upstream\emscripten\system\include\emscripten\emscripten.h"
-// #include "C:\emsdk\upstream\emscripten\system\include\emscripten\html5.h"
+#include <emscripten.h>
+#include <html5.h>
 #endif
 
-using namespace std;
-
-MainLoop::MainLoop(vector<Block> _staticBlocks,
-                   vector<Enemy> _enemies,
-                   vector<Bullet> _bullets,
+MainLoop::MainLoop(std::vector<Block> _staticBlocks,
+                   std::vector<Enemy> _enemies,
+                   std::vector<Bullet> _bullets,
                    Player _player, Shader _shader, Light _light)
 {
     staticBlocks = _staticBlocks;
@@ -25,7 +24,7 @@ MainLoop::MainLoop(vector<Block> _staticBlocks,
 void MainLoop::loop()
 {
     UpdateLightValues(shader, light);
-    
+
     player.updateCameraDirection();
 
     float cameraPos[3] = {player.camera.position.x, player.camera.position.y, player.camera.position.z};
@@ -146,14 +145,16 @@ MainLoop Init()
     const float floatValue[4] = {0.1f, 0.1f, 0.1f, 1.0f};
     SetShaderValue(shader, ambientLoc, floatValue, SHADER_UNIFORM_VEC4);
 
-    vector<Bullet> bullets = {};
-    vector<Enemy> enemies = {
-        Enemy(Vector3{-16.0f, 2.5f, 0.0f}, Vector3{3.0f, 3.0f, 3.0f}, GREEN, shader),
-        Enemy(Vector3{-16.0f, 8.5f, 0.0f}, Vector3{6.0f, 6.0f, 6.0f}, GREEN, shader)};
-    vector<Block> staticBlocks = {
-        Block(Vector3{0, -5, 0}, Vector3{30.0f, 3.0f, 30.0f}, GREEN, shader),
-        Block(Vector3{-5.0f, -2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader),
-        Block(Vector3{-7.0f, 2.0f, -7.0f}, Vector3{3.0f, 6.0f, 3.0f}, RED, shader)};
+    std::vector<Bullet> bullets = {};
+    
+    std::vector<Enemy> enemies = {};
+    enemies.push_back(Enemy(Vector3{-16.0f, 2.5f, 0.0f}, Vector3{3.0f, 3.0f, 3.0f}, GREEN, shader));
+    enemies.push_back(Enemy(Vector3{-16.0f, 8.5f, 0.0f}, Vector3{6.0f, 6.0f, 6.0f}, GREEN, shader));
+    
+    std::vector<Block> staticBlocks = {};
+    staticBlocks.push_back(Block(Vector3{0, -5, 0}, Vector3{30.0f, 3.0f, 30.0f}, GREEN, shader));
+    staticBlocks.push_back(Block(Vector3{-5.0f, -2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader));
+    staticBlocks.push_back(Block(Vector3{-7.0f, 2.0f, -7.0f}, Vector3{3.0f, 6.0f, 3.0f}, RED, shader));
 
     Light light = CreateLight(LIGHT_POINT, Vector3{0, 4, 0}, Vector3{0, 3, 0}, WHITE, shader);
 

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "./include/raylib/raylib.h"
+#include <raylib.h>
 #include "Object.h"
 #include "Block.h"
 #include <iostream>

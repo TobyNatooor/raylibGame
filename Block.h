@@ -1,5 +1,5 @@
 #pragma once
-#include "./include/raylib/raylib.h"
+#include <raylib.h>
 #include "./Object.h"
 
 class Block : public Object
