@@ -1,11 +1,11 @@
 #pragma once
 #include "main.h"
 
-// #define WEB_BUILD
+#define WEB_BUILD
 
 #if defined(WEB_BUILD)
 #include <emscripten.h>
-#include <html5.h>
+#include <emscripten/html5.h>
 #endif
 
 MainLoop::MainLoop(std::vector<Block> _staticBlocks,
@@ -146,7 +146,7 @@ MainLoop Init()
     SetShaderValue(shader, ambientLoc, floatValue, SHADER_UNIFORM_VEC4);
 
     std::vector<Bullet> bullets = {};
-    
+
     std::vector<Enemy> enemies = {};
     enemies.push_back(Enemy(Vector3{-16.0f, 2.5f, 0.0f}, Vector3{3.0f, 3.0f, 3.0f}, GREEN, shader));
     enemies.push_back(Enemy(Vector3{-16.0f, 8.5f, 0.0f}, Vector3{6.0f, 6.0f, 6.0f}, GREEN, shader));
