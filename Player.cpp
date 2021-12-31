@@ -26,10 +26,13 @@ void Player::updateCameraDirection()
     camera.position = position;
 
     Vector2 mouseDelta = GetMouseDelta();
-    SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
+#if defined(WEB_BUILD)
 
-    mouseDeltaSum.x -= mouseDelta.x / 800;
-    mouseDeltaSum.y -= mouseDelta.y / 600;
+#else
+    SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
+#endif
+    mouseDeltaSum.x -= mouseDelta.x / 800.0f;
+    mouseDeltaSum.y -= mouseDelta.y / 600.0f;
 
     if (mouseDeltaSum.y > 1.57f)
         mouseDeltaSum.y = 1.57f;

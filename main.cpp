@@ -8,6 +8,37 @@
 #include <emscripten/html5.h>
 #endif
 
+void displayDataWindow(Player player)
+{
+    // Converts string 'displayString' to char[] to displays it ingame
+    std::string displayString =
+        std::to_string(GetFPS()) + "\n" +
+        std::to_string(GetMousePosition().x) + ", " +
+        std::to_string(GetMousePosition().y) +
+        // "[" +
+        // std::to_string(player.camera.target.x) + "," +
+        // std::to_string(player.camera.target.y) + "," +
+        // std::to_string(player.camera.target.z) + "]," +
+        // "\n[" +
+        // std::to_string(player.camera.position.x) + "," +
+        // std::to_string(player.camera.position.y) + "," +
+        // std::to_string(player.camera.position.z) + "]," +
+        // "\n[" +
+        // std::to_string(player.direction.x) + "," +
+        // std::to_string(player.direction.y) + "," +
+        // std::to_string(player.direction.z) + "]," +
+        // "\n[" +
+        // std::to_string(player.mouseDeltaSum.x) + "," +
+        // std::to_string(player.mouseDeltaSum.y) + "]," +
+        // "\n" + std::to_string(player.isFalling) +
+        "";
+    char displayChar[1024];
+    strcpy(displayChar, displayString.c_str());
+    DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
+    DrawRectangleLines(10, 10, 220, 70, BLUE);
+    DrawText(displayChar, 20, 20, 10, BLACK);
+}
+
 MainLoop::MainLoop(std::vector<Block> _staticBlocks,
                    std::vector<Enemy> _enemies,
                    std::vector<Bullet> _bullets,
@@ -66,7 +97,7 @@ void MainLoop::loop()
 
     EndMode3D();
 
-    // displayDataWindow(player);
+    displayDataWindow(player);
 
     EndDrawing();
 
@@ -100,35 +131,6 @@ void MainLoop::end()
     CloseWindow();
 }
 
-/* void displayDataWindow(Player player)
-{
-    // Converts string 'displayString' to char[] to displays it ingame
-    string displayString =
-        to_string(GetFPS()) + "\n" +
-        "[" +
-        to_string(player.camera.target.x) + "," +
-        to_string(player.camera.target.y) + "," +
-        to_string(player.camera.target.z) + "]," +
-        "\n[" +
-        to_string(player.camera.position.x) + "," +
-        to_string(player.camera.position.y) + "," +
-        to_string(player.camera.position.z) + "]," +
-        //    "\n[" +
-        //    to_string(player.direction.x) + "," +
-        //    to_string(player.direction.y) + "," +
-        //    to_string(player.direction.z) + "]," +
-        //   "\n[" +
-        //   to_string(player.mouseDeltaSum.x) + "," +
-        //   to_string(player.mouseDeltaSum.y) + "]," +
-        //    "\n" + to_string(player.isFalling) +
-        "";
-    char displayChar[1024];
-    strcpy_s(displayChar, displayString.c_str());
-    DrawRectangle(10, 10, 220, 70, Fade(SKYBLUE, 0.5f));
-    DrawRectangleLines(10, 10, 220, 70, BLUE);
-    DrawText(displayChar, 20, 20, 10, BLACK);
-} */
-
 MainLoop Init()
 {
     int screenWidth = 1280;
@@ -150,7 +152,7 @@ MainLoop Init()
     std::vector<Enemy> enemies = {};
     enemies.push_back(Enemy(Vector3{-16.0f, 2.5f, 0.0f}, Vector3{3.0f, 3.0f, 3.0f}, GREEN, shader));
     enemies.push_back(Enemy(Vector3{-16.0f, 8.5f, 0.0f}, Vector3{6.0f, 6.0f, 6.0f}, GREEN, shader));
-    
+
     std::vector<Block> staticBlocks = {};
     staticBlocks.push_back(Block(Vector3{0, -5, 0}, Vector3{30.0f, 3.0f, 30.0f}, GREEN, shader));
     staticBlocks.push_back(Block(Vector3{-5.0f, -2.0f, -5.0f}, Vector3{3.0f, 3.0f, 3.0f}, GRAY, shader));
@@ -185,7 +187,7 @@ int main(void)
 {
 
 #if defined(WEB_BUILD)
-    // emscripten_request_pointerlock();
+    // emscripten_set_mousemove_callback_on_thread("canvas", );
     emscripten_set_main_loop(c_loop, 60, 1);
 #else
     while (!WindowShouldClose())
