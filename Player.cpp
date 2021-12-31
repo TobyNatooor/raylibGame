@@ -19,18 +19,26 @@ Player::Player(Vector3 _position, Vector3 _dimension, vector<Block> _staticBlock
     jumpHeight = _jumpHeight;
     yAcceleration = _jumpHeight;
     staticBlocks = _staticBlocks;
+
+    lastMouseDelta = GetMousePosition();
 }
 
 void Player::updateCameraDirection()
 {
     camera.position = position;
 
-    Vector2 mouseDelta = GetMouseDelta();
-#if defined(WEB_BUILD)
+    #if defined(__EMSCRIPTEN__)
+    Vector2 mousePos = GetMousePosition();
 
-#else
-    SetMousePosition((GetScreenWidth() / 2), (GetScreenHeight() / 2));
-#endif
+    Vector2 mouseDelta = {mousePos.x - lastMouseDelta.x,
+                          mousePos.y - lastMouseDelta.y};
+
+    lastMouseDelta = mousePos;
+    #else
+    Vector2 mouseDelta = GetMouseDelta();
+    SetMousePosition(GetScreenHeight() / 2, GetScreenWidth() / 2);
+    #endif
+
     mouseDeltaSum.x -= mouseDelta.x / 800.0f;
     mouseDeltaSum.y -= mouseDelta.y / 600.0f;
 

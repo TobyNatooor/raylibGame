@@ -1,9 +1,6 @@
-#pragma once
 #include "main.h"
 
-#define WEB_BUILD
-
-#if defined(WEB_BUILD)
+#if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
 #include <emscripten/html5.h>
 #endif
@@ -13,8 +10,8 @@ void displayDataWindow(Player player)
     // Converts string 'displayString' to char[] to displays it ingame
     std::string displayString =
         std::to_string(GetFPS()) + "\n" +
-        std::to_string(GetMousePosition().x) + ", " +
-        std::to_string(GetMousePosition().y) +
+        std::to_string(GetScreenHeight()) + ", " +
+        std::to_string(GetScreenWidth()) +
         // "[" +
         // std::to_string(player.camera.target.x) + "," +
         // std::to_string(player.camera.target.y) + "," +
@@ -105,6 +102,7 @@ void MainLoop::loop()
     {
         Bullet bullet = Bullet(player.camera.position, BLACK, shader, player.direction, 0.3f, 0.3f);
         bullets.push_back(bullet);
+        std::cout << "shoot" << std::endl;
     }
     if (IsKeyDown(KEY_SPACE))
         player.jump();
@@ -116,6 +114,7 @@ void MainLoop::loop()
         player.moveLeft();
     if (IsKeyDown(KEY_D))
         player.moveRight();
+        
     player.updateGravity();
 }
 
@@ -167,7 +166,7 @@ MainLoop Init()
     DisableCursor();
     HideCursor();
 
-    // #if defined(WEB_BUILD)
+    // #if defined(__EMSCRIPEN__)
     //     DisableCursor();
     // #else
     //     HideCursor();
@@ -186,8 +185,7 @@ void c_loop()
 int main(void)
 {
 
-#if defined(WEB_BUILD)
-    // emscripten_set_mousemove_callback_on_thread("canvas", );
+#if defined(__EMSCRIPTEN__)
     emscripten_set_main_loop(c_loop, 60, 1);
 #else
     while (!WindowShouldClose())

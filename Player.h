@@ -14,6 +14,7 @@ public:
     Camera camera;
     Vector3 direction;
     Vector2 mouseDeltaSum;
+    Vector2 lastMouseDelta;
 
     Player(Vector3 _position, Vector3 _dimension, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight);
     void updateCameraDirection();
