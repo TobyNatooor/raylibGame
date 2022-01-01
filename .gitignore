@@ -1,7 +1,8 @@
 buildweb/*.wasm
 buildweb/*.html
 buildweb/*.js
-build/game.exe
+buildweb/*.data
+build/*.exe
 .vscode/launch.json
 .vscode/settings.json
 .vscode/tasks.json

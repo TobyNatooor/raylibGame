@@ -11,7 +11,8 @@ void displayDataWindow(Player player)
     std::string displayString =
         std::to_string(GetFPS()) + "\n" +
         std::to_string(GetScreenHeight()) + ", " +
-        std::to_string(GetScreenWidth()) +
+        std::to_string(GetScreenWidth()) + "," +
+        // std::to_string(GetTouchEvent()) + "," +
         // "[" +
         // std::to_string(player.camera.target.x) + "," +
         // std::to_string(player.camera.target.y) + "," +
@@ -96,14 +97,8 @@ void MainLoop::loop()
 
     displayDataWindow(player);
 
-    EndDrawing();
-
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-    {
-        Bullet bullet = Bullet(player.camera.position, BLACK, shader, player.direction, 0.3f, 0.3f);
-        bullets.push_back(bullet);
-        std::cout << "shoot" << std::endl;
-    }
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        bullets.push_back(Bullet(player.camera.position, BLACK, shader, player.direction, 0.3f, 0.3f));
     if (IsKeyDown(KEY_SPACE))
         player.jump();
     if (IsKeyDown(KEY_W))
@@ -114,8 +109,13 @@ void MainLoop::loop()
         player.moveLeft();
     if (IsKeyDown(KEY_D))
         player.moveRight();
-        
+
+    EndDrawing();
+
+
     player.updateGravity();
+
+
 }
 
 void MainLoop::end()
@@ -140,7 +140,7 @@ MainLoop Init()
     InitWindow(screenWidth, screenHeight, "C++ Game");
 
     // Shader
-    Shader shader = LoadShader("../shaders/base_lighting.vs", "../shaders/lighting.fs");
+    Shader shader = LoadShader("shaders/base_lighting.vs", "shaders/lighting.fs");
     shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
     const int ambientLoc = GetShaderLocation(shader, "ambient");
     const float floatValue[4] = {0.1f, 0.1f, 0.1f, 1.0f};
@@ -164,7 +164,7 @@ MainLoop Init()
     SetCameraMode(player.camera, CAMERA_CUSTOM);
     SetTargetFPS(60);
     DisableCursor();
-    HideCursor();
+    // HideCursor();
 
     // #if defined(__EMSCRIPEN__)
     //     DisableCursor();
