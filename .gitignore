@@ -1,7 +1,7 @@
-buildweb/*.wasm
-buildweb/*.html
-buildweb/*.js
-buildweb/*.data
+# buildweb/*.wasm
+# buildweb/*.html
+# buildweb/*.js
+# buildweb/*.data
 build/*.exe
 .vscode/launch.json
 .vscode/settings.json
