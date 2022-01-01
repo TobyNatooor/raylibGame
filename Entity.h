@@ -10,8 +10,8 @@ using std::vector;
 class Entity : public Object
 {
 public:
-    int health;
-    int attackPower;
+    // int health;
+    // int attackPower;
 
     float yAcceleration;
     float movementSpeed;
@@ -20,6 +20,7 @@ public:
     bool isJumping;
     bool isFalling;
     vector<Block> staticBlocks;
+    Vector3 dimension;
 
     Entity(Vector3 _position, Vector3 _dimension, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight);
     void moveXZ(float xDistance, float zDistance);

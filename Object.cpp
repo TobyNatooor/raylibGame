@@ -1,13 +1,19 @@
-#include "./Object.h"
+#include "Object.h"
 
-Object::Object(Vector3 _position, Vector3 _dimension, Color _color)
+Object::Object(Vector3 _position, Color _color)
 {
-    dimension = _dimension;
     position = _position;
     color = _color;
 }
 
 void Object::draw()
 {
-    DrawModel(model, position, 1.0f, color);
+    try
+    {
+        DrawModel(model, position, 1.0f, color);
+    }
+    catch (const std::exception &e)
+    {
+        throw "model is most likely undefined";
+    }
 }

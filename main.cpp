@@ -8,9 +8,9 @@ void displayDataWindow(Player player)
 {
     // Converts string 'displayString' to char[] to displays it ingame
     std::string displayString =
-        std::to_string(GetFPS()) + "\n" +
-        std::to_string(GetScreenHeight()) + ", " +
-        std::to_string(GetScreenWidth()) + "," +
+        "FPS: " + std::to_string(GetFPS()) + "\n" +
+        // std::to_string(GetScreenHeight()) + ", " +
+        // std::to_string(GetScreenWidth()) + "," +
         // "\n[" +
         // std::to_string(player.mouseDeltaSum.x) + "," +
         // std::to_string(player.mouseDeltaSum.y) + "]," +

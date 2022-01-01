@@ -1,4 +1,4 @@
-#include "./Player.h"
+#include "Player.h"
 
 Player::Player(Vector3 _position, Vector3 _dimension, vector<Block> _staticBlocks, float _movementSpeed, float _gravitySpeed, float _jumpHeight)
     : Entity(_position, _dimension, _staticBlocks, _movementSpeed, _gravitySpeed, _jumpHeight)
