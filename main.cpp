@@ -2,7 +2,6 @@
 
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
-#include <emscripten/html5.h>
 #endif
 
 void displayDataWindow(Player player)
@@ -12,19 +11,6 @@ void displayDataWindow(Player player)
         std::to_string(GetFPS()) + "\n" +
         std::to_string(GetScreenHeight()) + ", " +
         std::to_string(GetScreenWidth()) + "," +
-        // std::to_string(GetTouchEvent()) + "," +
-        // "[" +
-        // std::to_string(player.camera.target.x) + "," +
-        // std::to_string(player.camera.target.y) + "," +
-        // std::to_string(player.camera.target.z) + "]," +
-        // "\n[" +
-        // std::to_string(player.camera.position.x) + "," +
-        // std::to_string(player.camera.position.y) + "," +
-        // std::to_string(player.camera.position.z) + "]," +
-        // "\n[" +
-        // std::to_string(player.direction.x) + "," +
-        // std::to_string(player.direction.y) + "," +
-        // std::to_string(player.direction.z) + "]," +
         // "\n[" +
         // std::to_string(player.mouseDeltaSum.x) + "," +
         // std::to_string(player.mouseDeltaSum.y) + "]," +
@@ -37,10 +23,8 @@ void displayDataWindow(Player player)
     DrawText(displayChar, 20, 20, 10, BLACK);
 }
 
-MainLoop::MainLoop(std::vector<Block> _staticBlocks,
-                   std::vector<Enemy> _enemies,
-                   std::vector<Bullet> _bullets,
-                   Player _player, Shader _shader, Light _light)
+Main::Main(std::vector<Block> _staticBlocks, std::vector<Enemy> _enemies,
+           std::vector<Bullet> _bullets, Player _player, Shader _shader, Light _light)
 {
     staticBlocks = _staticBlocks;
     enemies = _enemies;
@@ -50,55 +34,19 @@ MainLoop::MainLoop(std::vector<Block> _staticBlocks,
     light = _light;
 }
 
-void MainLoop::loop()
+void Main::loop()
 {
     UpdateLightValues(shader, light);
-
     player.updateCameraDirection();
-
+    UpdateCamera(&player.camera);
     float cameraPos[3] = {player.camera.position.x, player.camera.position.y, player.camera.position.z};
     SetShaderValue(shader, shader.locs[SHADER_LOC_VECTOR_VIEW], cameraPos, SHADER_UNIFORM_VEC3);
 
-    // if (IsWindowResized())
-    // {
-    //     screenWidth = GetScreenWidth();
-    //     screenHeight = GetScreenHeight();
-    // }
-
-    UpdateCamera(&player.camera);
-    BeginDrawing();
-    ClearBackground(RAYWHITE);
-
-    BeginMode3D(player.camera);
-
-    // Draw bullets
-    for (Bullet &bullet : bullets)
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
-        bullet.move();
-        bullet.draw();
-    };
-
-    // Draw enemies
-    for (Enemy &enemy : enemies)
-    {
-        if (enemy.isHitByBullets(bullets))
-            enemy.drawHit();
-        else
-            enemy.draw();
-    };
-
-    // Draw blocks
-    for (Block &staticBlock : staticBlocks)
-    {
-        staticBlock.draw();
-    };
-
-    EndMode3D();
-
-    displayDataWindow(player);
-
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-        bullets.push_back(Bullet(player.camera.position, BLACK, shader, player.direction, 0.3f, 0.3f));
+        Bullet bullet = Bullet(player.camera.position, BLACK, shader, player.direction, 0.3f, 0.3f);
+        bullets.push_back(bullet);
+    }
     if (IsKeyDown(KEY_SPACE))
         player.jump();
     if (IsKeyDown(KEY_W))
@@ -110,15 +58,40 @@ void MainLoop::loop()
     if (IsKeyDown(KEY_D))
         player.moveRight();
 
-    EndDrawing();
-
-
     player.updateGravity();
 
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    BeginMode3D(player.camera);
 
+    // Draw bullets
+    for (Bullet &bullet : bullets)
+    {
+        bullet.move();
+        bullet.draw();
+    };
+    // Draw enemies
+    for (Enemy &enemy : enemies)
+    {
+        if (enemy.isHitByBullets(bullets))
+            enemy.drawHit();
+        else
+            enemy.draw();
+    };
+    // Draw blocks
+    for (Block &staticBlock : staticBlocks)
+    {
+        staticBlock.draw();
+    };
+
+    EndMode3D();
+
+    displayDataWindow(player);
+
+    EndDrawing();
 }
 
-void MainLoop::end()
+void Main::end()
 {
     for (Bullet &bullet : bullets)
         UnloadModel(bullet.model);
@@ -130,7 +103,7 @@ void MainLoop::end()
     CloseWindow();
 }
 
-MainLoop Init()
+Main mainInit()
 {
     int screenWidth = 1280;
     int screenHeight = 720;
@@ -164,34 +137,26 @@ MainLoop Init()
     SetCameraMode(player.camera, CAMERA_CUSTOM);
     SetTargetFPS(60);
     DisableCursor();
-    // HideCursor();
 
-    // #if defined(__EMSCRIPEN__)
-    //     DisableCursor();
-    // #else
-    //     HideCursor();
-    // #endif
-
-    return MainLoop(staticBlocks, enemies, bullets, player, shader, light);
+    return Main(staticBlocks, enemies, bullets, player, shader, light);
 }
 
-MainLoop loop = Init();
+Main m = mainInit();
 
 void c_loop()
 {
-    loop.loop();
+    m.loop();
 }
 
 int main(void)
 {
-
 #if defined(__EMSCRIPTEN__)
     emscripten_set_main_loop(c_loop, 60, 1);
 #else
     while (!WindowShouldClose())
-        loop.loop();
+        m.loop();
 #endif
 
-    loop.end();
+    m.end();
     return 0;
 }
