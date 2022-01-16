@@ -197,7 +197,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
   
    }
-   loadPackage({"files": [{"filename": "/shaders/base_lighting.vs", "start": 0, "end": 1637}, {"filename": "/shaders/lighting.fs", "start": 1637, "end": 3728}], "remote_package_size": 3728, "package_uuid": "d3bd0014-fa66-49cd-9ad7-18c46f728977"});
+   loadPackage({"files": [{"filename": "/shaders/base_lighting.vs", "start": 0, "end": 1637}, {"filename": "/shaders/lighting.fs", "start": 1637, "end": 3728}], "remote_package_size": 3728, "package_uuid": "282a3612-6a76-4924-95dd-5aff88f9ebdc"});
   
   })();
   
@@ -10037,13 +10037,13 @@ var _emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = function()
 };
 
 /** @type {function(...*):?} */
-var dynCall_ii = Module["dynCall_ii"] = createExportWrapper("dynCall_ii");
+var dynCall_vi = Module["dynCall_vi"] = createExportWrapper("dynCall_vi");
 
 /** @type {function(...*):?} */
 var dynCall_v = Module["dynCall_v"] = createExportWrapper("dynCall_v");
 
 /** @type {function(...*):?} */
-var dynCall_vi = Module["dynCall_vi"] = createExportWrapper("dynCall_vi");
+var dynCall_ii = Module["dynCall_ii"] = createExportWrapper("dynCall_ii");
 
 /** @type {function(...*):?} */
 var dynCall_iiii = Module["dynCall_iiii"] = createExportWrapper("dynCall_iiii");
@@ -10393,8 +10393,15 @@ function callMain(args) {
 
   var entryFunction = Module['_main'];
 
-  var argc = 0;
-  var argv = 0;
+  args = args || [];
+
+  var argc = args.length+1;
+  var argv = stackAlloc((argc + 1) * 4);
+  HEAP32[argv >> 2] = allocateUTF8OnStack(thisProgram);
+  for (var i = 1; i < argc; i++) {
+    HEAP32[(argv >> 2) + i] = allocateUTF8OnStack(args[i - 1]);
+  }
+  HEAP32[(argv >> 2) + argc] = 0;
 
   try {
 
