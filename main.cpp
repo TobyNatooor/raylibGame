@@ -151,7 +151,7 @@ void c_loop()
 int main(void)
 {
 #if defined(__EMSCRIPTEN__)
-    emscripten_set_main_loop(c_loop, 60, 1);
+    emscripten_set_main_loop(c_loop, 0, 1);
 #else
     while (!WindowShouldClose())
         m.loop();
