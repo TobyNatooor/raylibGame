@@ -197,7 +197,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
   
    }
-   loadPackage({"files": [{"filename": "/shaders/base_lighting.vs", "start": 0, "end": 1637}, {"filename": "/shaders/lighting.fs", "start": 1637, "end": 3728}], "remote_package_size": 3728, "package_uuid": "282a3612-6a76-4924-95dd-5aff88f9ebdc"});
+   loadPackage({"files": [{"filename": "/shaders/base_lighting.vs", "start": 0, "end": 1637}, {"filename": "/shaders/lighting.fs", "start": 1637, "end": 3728}], "remote_package_size": 3728, "package_uuid": "e599bd4c-0444-4e00-948e-39e5cbdf71f9"});
   
   })();
   
@@ -578,7 +578,10 @@ assert(!ENVIRONMENT_IS_SHELL, "shell environment detected but not enabled at bui
 
 
 var STACK_ALIGN = 16;
-var POINTER_SIZE = 4;
+
+function getPointerSize() {
+  return 4;
+}
 
 function getNativeTypeSize(type) {
   switch (type) {
@@ -590,7 +593,7 @@ function getNativeTypeSize(type) {
     case 'double': return 8;
     default: {
       if (type[type.length-1] === '*') {
-        return POINTER_SIZE;
+        return getPointerSize();
       } else if (type[0] === 'i') {
         var bits = Number(type.substr(1));
         assert(bits % 8 === 0, 'getNativeTypeSize invalid bits ' + bits + ', type ' + type);
@@ -1473,8 +1476,8 @@ function writeStackCookie() {
   var max = _emscripten_stack_get_end();
   assert((max & 3) == 0);
   // The stack grows downwards
-  HEAP32[((max + 4)>>2)] = 0x2135467;
-  HEAP32[((max + 8)>>2)] = 0x89BACDFE;
+  HEAP32[((max + 4)>>2)] = 0x2135467
+  HEAP32[((max + 8)>>2)] = 0x89BACDFE
   // Also test the global address 0 for integrity.
   HEAP32[0] = 0x63736d65; /* 'emsc' */
 }
@@ -1485,7 +1488,7 @@ function checkStackCookie() {
   var cookie1 = HEAPU32[((max + 4)>>2)];
   var cookie2 = HEAPU32[((max + 8)>>2)];
   if (cookie1 != 0x2135467 || cookie2 != 0x89BACDFE) {
-    abort('Stack overflow! Stack cookie has been overwritten, expected hex dwords 0x89BACDFE and 0x2135467, but received 0x' + cookie2.toString(16) + ' 0x' + cookie1.toString(16));
+    abort('Stack overflow! Stack cookie has been overwritten, expected hex dwords 0x89BACDFE and 0x2135467, but received 0x' + cookie2.toString(16) + ' ' + cookie1.toString(16));
   }
   // Also test the global address 0 for integrity.
   if (HEAP32[0] !== 0x63736d65 /* 'emsc' */) abort('Runtime error: The application has corrupted its heap memory area (address zero)!');
@@ -4422,8 +4425,9 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
           // need a valid mode
           return -28;
         }
+        var node;
         var lookup = FS.lookupPath(path, { follow: true });
-        var node = lookup.node;
+        node = lookup.node;
         if (!node) {
           return -44;
         }
@@ -4501,8 +4505,8 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
           stream.flags |= arg;
           return 0;
         }
-        case 5:
-        /* case 5: Currently in musl F_GETLK64 has same value as F_GETLK, so omitted to avoid duplicate case blocks. If that changes, uncomment this */ {
+        case 12:
+        /* case 12: Currently in musl F_GETLK64 has same value as F_GETLK, so omitted to avoid duplicate case blocks. If that changes, uncomment this */ {
           
           var arg = SYSCALLS.get();
           var offset = 0;
@@ -4510,10 +4514,10 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
           HEAP16[(((arg)+(offset))>>1)] = 2;
           return 0;
         }
-        case 6:
-        case 7:
-        /* case 6: Currently in musl F_SETLK64 has same value as F_SETLK, so omitted to avoid duplicate case blocks. If that changes, uncomment this */
-        /* case 7: Currently in musl F_SETLKW64 has same value as F_SETLKW, so omitted to avoid duplicate case blocks. If that changes, uncomment this */
+        case 13:
+        case 14:
+        /* case 13: Currently in musl F_SETLK64 has same value as F_SETLK, so omitted to avoid duplicate case blocks. If that changes, uncomment this */
+        /* case 14: Currently in musl F_SETLKW64 has same value as F_SETLKW, so omitted to avoid duplicate case blocks. If that changes, uncomment this */
           
           
           return 0; // Pretend that the locking is successful.
@@ -4529,7 +4533,7 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
         }
       }
     } catch (e) {
-    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return -e.errno;
   }
   }
@@ -4543,7 +4547,7 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
       stringToUTF8(cwd, buf, size);
       return buf;
     } catch (e) {
-    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return -e.errno;
   }
   }
@@ -4597,7 +4601,7 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
         default: abort('bad ioctl syscall ' + op);
       }
     } catch (e) {
-    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return -e.errno;
   }
   }
@@ -4610,7 +4614,7 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
       var stream = FS.open(pathname, flags, mode);
       return stream.fd;
     } catch (e) {
-    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return -e.errno;
   }
   }
@@ -7203,7 +7207,7 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
         if (typeof SDL != "undefined") {
           var flags = HEAPU32[((SDL.screen)>>2)];
           flags = flags | 0x00800000; // set SDL_FULLSCREEN flag
-          HEAP32[((SDL.screen)>>2)] = flags;
+          HEAP32[((SDL.screen)>>2)] = flags
         }
         Browser.updateCanvasDimensions(Module['canvas']);
         Browser.updateResizeListeners();
@@ -7212,7 +7216,7 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
         if (typeof SDL != "undefined") {
           var flags = HEAPU32[((SDL.screen)>>2)];
           flags = flags & ~0x00800000; // clear SDL_FULLSCREEN flag
-          HEAP32[((SDL.screen)>>2)] = flags;
+          HEAP32[((SDL.screen)>>2)] = flags
         }
         Browser.updateCanvasDimensions(Module['canvas']);
         Browser.updateResizeListeners();
@@ -7580,7 +7584,7 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
       FS.close(stream);
       return 0;
     } catch (e) {
-    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return e.errno;
   }
   }
@@ -7589,10 +7593,10 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
   
       var stream = SYSCALLS.getStreamFromFD(fd);
       var num = SYSCALLS.doReadv(stream, iov, iovcnt);
-      HEAP32[((pnum)>>2)] = num;
+      HEAP32[((pnum)>>2)] = num
       return 0;
     } catch (e) {
-    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return e.errno;
   }
   }
@@ -7616,7 +7620,7 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
       if (stream.getdents && offset === 0 && whence === 0) stream.getdents = null; // reset readdir state
       return 0;
     } catch (e) {
-    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return e.errno;
   }
   }
@@ -7626,10 +7630,10 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
       ;
       var stream = SYSCALLS.getStreamFromFD(fd);
       var num = SYSCALLS.doWritev(stream, iov, iovcnt);
-      HEAP32[((pnum)>>2)] = num;
+      HEAP32[((pnum)>>2)] = num
       return 0;
     } catch (e) {
-    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) throw e;
+    if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
     return e.errno;
   }
   }
@@ -8581,18 +8585,13 @@ function GetCanvasWidth(){ return canvas.clientWidth; }
   
         if (!GLFW.active.windowSizeFunc) return;
   
-        callUserCallback(function() {
-  
-          (function(a1, a2, a3) {  dynCall_viii.apply(null, [GLFW.active.windowSizeFunc, a1, a2, a3]); })(GLFW.active.id, GLFW.active.width, GLFW.active.height);
-        });
+        (function(a1, a2, a3) {  dynCall_viii.apply(null, [GLFW.active.windowSizeFunc, a1, a2, a3]); })(GLFW.active.id, GLFW.active.width, GLFW.active.height);
       },onFramebufferSizeChanged:function() {
         if (!GLFW.active) return;
   
         if (!GLFW.active.framebufferSizeFunc) return;
   
-        callUserCallback(function() {
-          (function(a1, a2, a3) {  dynCall_viii.apply(null, [GLFW.active.framebufferSizeFunc, a1, a2, a3]); })(GLFW.active.id, GLFW.active.width, GLFW.active.height);
-        });
+        (function(a1, a2, a3) {  dynCall_viii.apply(null, [GLFW.active.framebufferSizeFunc, a1, a2, a3]); })(GLFW.active.id, GLFW.active.width, GLFW.active.height);
       },getTime:function() {
         return _emscripten_get_now() / 1000;
       },setWindowTitle:function(winid, title) {
@@ -10109,10 +10108,10 @@ var dynCall_viffff = Module["dynCall_viffff"] = createExportWrapper("dynCall_vif
 var dynCall_viiiiii = Module["dynCall_viiiiii"] = createExportWrapper("dynCall_viiiiii");
 
 /** @type {function(...*):?} */
-var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
+var dynCall_iidiiii = Module["dynCall_iidiiii"] = createExportWrapper("dynCall_iidiiii");
 
 /** @type {function(...*):?} */
-var dynCall_iidiiii = Module["dynCall_iidiiii"] = createExportWrapper("dynCall_iidiiii");
+var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
 /** @type {function(...*):?} */
 var _asyncify_start_unwind = Module["_asyncify_start_unwind"] = createExportWrapper("asyncify_start_unwind");
