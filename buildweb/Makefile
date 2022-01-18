@@ -5,6 +5,7 @@ CFLAGS += --preload-file shaders/base_lighting.vs --preload-file shaders/lightin
 CFLAGS += -Wall -D_DEFAULT_SOURCE -Wno-missing-braces -Werror=pointer-arith -fno-strict-aliasing
 CFLAGS += -Werror=implicit-function-declaration
 CFLAGS += -DPLATFORM_WEB
+CFLAGS+= --shell-file game.html
 
 CPPFILES = $(wildcard ../*.cpp)
 
