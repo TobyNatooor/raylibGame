@@ -197,7 +197,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
   
    }
-   loadPackage({"files": [{"filename": "/shaders/base_lighting.vs", "start": 0, "end": 1637}, {"filename": "/shaders/lighting.fs", "start": 1637, "end": 3728}], "remote_package_size": 3728, "package_uuid": "2d14703e-ac61-43c2-8da1-8950a4838d25"});
+   loadPackage({"files": [{"filename": "/shaders/base_lighting.txt", "start": 0, "end": 1637}, {"filename": "/shaders/lighting.txt", "start": 1637, "end": 3728}], "remote_package_size": 3728, "package_uuid": "2d14703e-ac61-43c2-8da1-8950a4838d25"});
   
   })();
   
