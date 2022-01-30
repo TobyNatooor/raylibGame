@@ -113,7 +113,11 @@ Main mainInit()
     InitWindow(screenWidth, screenHeight, "C++ Game");
 
     // Shader
+#if defined(__EMSCRIPTEN__)
+    Shader shader = LoadShader("shaders/base_lighting.txt", "shaders/lighting.txt");
+#else
     Shader shader = LoadShader("shaders/base_lighting.vs", "shaders/lighting.fs");
+#endif
     shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
     const int ambientLoc = GetShaderLocation(shader, "ambient");
     const float floatValue[4] = {0.1f, 0.1f, 0.1f, 1.0f};
